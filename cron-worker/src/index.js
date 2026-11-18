@@ -33,7 +33,7 @@ export async function reconcile(env,log=console){
  const rows=await env.DB.prepare(
   "SELECT o.id,o.status,o.service_id,o.amount_dop,o.test_phone,l.transaction_id,l.provider_status "+
   "FROM sandbox_order_links l JOIN demo_orders o ON o.id=l.order_id "+
-  "WHERE o.status='pending' AND l.provider_status IN ('PENDING','PROCESSING') "+
+  "WHERE o.status='pending' "+
   "ORDER BY l.last_checked_at ASC LIMIT ?"
  ).bind(MAX_PER_RUN).all();
  const results={examined:0,updated:0,still_pending:0,invalid:0,errors:0};
@@ -48,14 +48,14 @@ export async function reconcile(env,log=console){
    const now=new Date().toISOString();
    if(ELIGIBLE.has(tx.state)){
     await env.DB.prepare(
-     'UPDATE sandbox_order_links SET provider_status=?,last_checked_at=? WHERE order_id=? AND transaction_id=? AND provider_status IN (?,?)'
-    ).bind(tx.state,now,order.id,order.transaction_id,'PENDING','PROCESSING').run();
+     'UPDATE sandbox_order_links SET provider_status=?,last_checked_at=? WHERE order_id=? AND transaction_id=?'
+    ).bind(tx.state,now,order.id,order.transaction_id).run();
     results.still_pending++;continue;
    }
    // Do not overwrite a manually edited or already-terminal D1 record.
    const updated=await env.DB.prepare(
     "UPDATE demo_orders SET status=?,updated_at=? WHERE id=? AND status='pending' "+
-    "AND EXISTS (SELECT 1 FROM sandbox_order_links WHERE order_id=? AND transaction_id=? AND provider_status IN ('PENDING','PROCESSING'))"
+    "AND EXISTS (SELECT 1 FROM sandbox_order_links WHERE order_id=? AND transaction_id=?)"
    ).bind(STATES[tx.state],now,order.id,order.id,order.transaction_id).run();
    if(updated.meta?.changes!==1){results.errors++;continue}
    await env.DB.prepare(
