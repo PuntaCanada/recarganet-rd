@@ -31,7 +31,7 @@ test('Server validates operator, amount and phone and makes only simulation',()=
 test('Browser language chooses correct landing page, and explicit selection overrides it',()=>{
  function check(page,locale,saved,expected){
   const html=page==='en'?en:es;
-  const src=html.match(/<script>\s*\/\* Locale routing:[\s\S]*?<\/script>/)?.[0]?.replace(/^<script>/,'').replace(/<\/script>$/,'');
+  const src=html.match(/<script>\s*\(function\(\)\{\s*const routes=[\s\S]*?<\/script>/)?.[0]?.replace(/^<script>/,'').replace(/<\/script>$/,'');
   assert.ok(src,'Automatic locale routing missing');
   const links=[{lang:'es',events:{},addEventListener(k,fn){this.events[k]=fn}},{lang:'en',events:{},addEventListener(k,fn){this.events[k]=fn}}];
   const storage={v:saved,getItem(){return this.v},setItem(_k,value){this.v=value}};
@@ -44,9 +44,26 @@ test('Browser language chooses correct landing page, and explicit selection over
  }
  check('es','es-DO',null,null);
  check('es','en-US',null,'/en/');
+ check('es','de-DE',null,'/de/');
+ check('es','fr-FR',null,'/fr/');
+ check('es','ht-HT',null,'/ht/');
+ check('es','pt-BR',null,'/pt/');
  check('es','de-DE',null,'/en/');
  check('es','pt-BR',null,null);
  check('en','es-DO',null,'/');
  check('en','es-DO','en',null);
  check('es','en-US','es',null);
+ check('en','de-DE','en','/de/');
+});
+
+test('Six-language menu has four locale links with accessible labels',()=>{
+ for(const lang of ['es','en','de','fr','ht','pt']){
+  const path=lang==='es'?'index.html':lang+'/index.html';
+  const html=fs.readFileSync(path,'utf8');
+  assert.match(html,new RegExp('<html lang="'+lang+'">'),path);
+  assert.match(html,/class="more-languages"/,path);
+  for(const link of ['\/de\/','\/fr\/','\/ht\/','\/pt\/'])assert.ok(html.includes('href="'+link+'"'),path+' missing locale '+link);
+  assert.match(html,/Aucun paiement réel|Keine echten Zahlungen|Pa gen peman reyèl|Sem pagamentos reais|Sin pagos reales|No real payments/,path+' missing localized warning');
+  for(const [,script] of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(script,{filename:path});
+ }
 });
