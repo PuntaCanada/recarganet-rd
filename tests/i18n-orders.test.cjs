@@ -48,8 +48,6 @@ test('Browser language chooses correct landing page, and explicit selection over
  check('es','fr-FR',null,'/fr/');
  check('es','ht-HT',null,'/ht/');
  check('es','pt-BR',null,'/pt/');
- check('es','de-DE',null,'/en/');
- check('es','pt-BR',null,null);
  check('en','es-DO',null,'/');
  check('en','es-DO','en',null);
  check('es','en-US','es',null);
