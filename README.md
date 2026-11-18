@@ -119,3 +119,13 @@ Ejemplo del historial previo: la transacción Sandbox `84630` corresponde a Clar
 - `fetch()` responde 404 a toda solicitud HTTP; sin interfaz pública de activación. Solo `scheduled()` realiza reconciliación.
 - Los cron triggers pueden tardar hasta 15 minutos en propagarse. Comprobar la sección de Cron Events y registros del Worker. Solo activar en la cuenta de pruebas, nunca con clientes reales.
 - Coste: compatible con uso pequeño en Workers Free dentro de los límites vigentes; comprobar cuotas y facturación de la cuenta.
+
+## Laboratorio de checkout persistente (fase 9)
+
+- `/checkout-lab/` es una **pantalla privada de pruebas**, deliberadamente separada de los seis idiomas del sitio público.
+- Usa el endpoint protegido `POST /api/admin/demo-orders` para crear un pedido D1 con operador, importe y únicamente los cuatro números ficticios permitidos. No genera recargas ni pagos. No hay una función pública nueva de cobros.
+- El nuevo endpoint `POST /api/admin/demo-order-lookup` requiere el secreto `RECARGA_TEST_ADMIN_TOKEN`, `RECARGA_D1_DEMO_ENABLED=true` y el binding D1 `DB`. Solo consulta D1 y su enlace sandbox ya existente; no llama a Recarga.do.
+- El recibo indica `status` de D1 y, **por separado**, `provider_status` de la transacción enlazada. Un estado asignado manualmente nunca constituye comprobación del proveedor.
+- El navegador consulta el estado cada 20 segundos mientras la pestaña esté visible y el estado esté abierto. No hay notificaciones externas ni almacenamiento del secreto en el navegador.
+- Un pedido nuevo permanece en estado `created` y no aparece en el monitor Cron hasta ser enlazado con una transacción Sandbox y estar en estado `pending`. La creación por sí sola no ejecuta ninguna operación de proveedor.
+- El checkout de clientes reales requiere todavía autenticación, manejo de datos personales, seguridad antiabuso, pasarela de pago, idempotencia transaccional persistida por el servidor y conciliación completa.
