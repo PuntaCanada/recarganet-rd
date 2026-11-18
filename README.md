@@ -55,3 +55,21 @@ No subir claves API ni credenciales al repositorio público.
 - Nunca publicar ni compartir el token del administrador.
 
 Referencia: https://recarga.do/doc/integracion.html
+
+## D1: almacenamiento de pedidos ficticios (fase 4)
+El código y el panel están preparados, pero **no** se activa una base de datos automáticamente y **no** se modifican los pedidos públicos. La función `/api/admin/demo-orders` permanece deshabilitada salvo que exista la vinculación D1 `DB` y la variable `RECARGA_D1_DEMO_ENABLED=true`. El panel está en `/demo-orders-admin/`.
+
+### Activación opcional en Cloudflare
+1. En el panel de Cloudflare, ir a **Storage & databases → D1 SQL Database** y crear una base de datos llamada `recarganet-rd-demo` en el plan Free.
+2. Entrar a la base de datos, pestaña **Console**, y ejecutar el contenido completo del archivo `schema.sql`. Esta tabla solo admite números ficticios de la sandbox.
+3. En **Workers & Pages → recarganet-rd → Settings → Bindings → Add binding → D1**, elegir la base anterior y usar exactamente el nombre `DB` (para Production).
+4. En **Variables and Secrets**, crear la variable de texto `RECARGA_D1_DEMO_ENABLED` con el valor `true`. Es independiente de `RECARGA_SANDBOX_TEST_ENABLED`, que debe permanecer en `false`.
+5. Usar un **nuevo** valor secreto fuerte para `RECARGA_TEST_ADMIN_TOKEN` en Cloudflare, sin copiarlo en chats ni GitHub. La clave anterior apareció en una conversación y debe ser reemplazada antes de habilitar esta función.
+6. Desplegar de nuevo el proyecto y abrir `/demo-orders-admin/`. Los registros guardados son siempre ficticios y no reflejan el estado real de ninguna recarga.
+7. Desactivar `RECARGA_D1_DEMO_ENABLED` cuando no se esté utilizando el panel de pruebas.
+
+### Restricciones
+- El endpoint público `/api/demo-orders` sigue siendo una **simulación sin persistencia**.
+- No existen pagos, cobros, recargas reales, seguimiento automático ni cuentas de clientes.
+- No introducir información real de clientes; el administrador solo puede almacenar cuatro números falsos de prueba.
+- Antes de usar D1 en producción se necesitan protección contra abuso, autenticación de clientes, permisos, trazabilidad, retención de datos, estados transaccionales seguros, recuperación de transacciones desconocidas e integración con pagos verificados.
