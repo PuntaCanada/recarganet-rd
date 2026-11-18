@@ -1,0 +1,22 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>RecargaNet RD · Vinculación Sandbox / D1</title><style>*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;background:#f1f7f7;color:#153a40;margin:0;padding:22px}.card{max-width:720px;margin:0 auto 16px;background:white;border:1px solid #d8e7e7;border-radius:18px;padding:23px}.notice{background:#fff4d9;border:1px solid #ead18e;border-radius:9px;padding:14px;line-height:1.55}h1{font-size:25px}label{display:block;font-weight:700;margin:16px 0 8px}input,button{font:inherit;width:100%;padding:13px;border-radius:9px}input{border:1px solid #b5cbd0}button{background:#087c63;color:white;border:0;cursor:pointer;margin-top:16px}button:disabled{opacity:.55;cursor:wait}small{color:#587078}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:14px;border-radius:10px;background:#edf5f5}a{color:#087c63}.muted{color:#587078}</style></head><body><div class="card"><p><a href="/demo-orders-admin/">← Volver a pedidos de prueba</a></p><h1>Vincular una transacción Sandbox a D1</h1><p class="notice"><strong>Solo para el administrador.</strong> Este proceso únicamente vincula una transacción de prueba ya existente. El servidor verifica que el servicio, el monto y el número ficticio coincidan exactamente con el pedido D1. No realiza recargas ni pagos. La clave de idempotencia fue anotada por el administrador: Recarga.do no la confirma mediante la consulta de transacción.</p><label for="token">Clave privada de administrador</label><input id="token" type="password" autocomplete="off" spellcheck="false"><label for="order">Referencia de pedido D1</label><input id="order" type="text" autocomplete="off" spellcheck="false" placeholder="D1-DEMO-..."><label for="transaction">ID de transacción en Recarga.do</label><input id="transaction" type="number" inputmode="numeric" min="1" step="1" placeholder="Ej.: 84630"><label for="idem">Clave de idempotencia ORIGINAL de la transacción</label><input id="idem" type="text" autocomplete="off" spellcheck="false" placeholder="UUID registrado en la prueba original"><p><small>Usa exactamente la clave registrada en la respuesta original. No inventes otra clave. La clave no se utiliza para repetir recargas, solo se guarda como referencia.</small></p><button id="link">Verificar y vincular (sin cambiar estado)</button><button id="sync">Consultar proveedor y actualizar estado D1</button><h2>Resultado</h2><pre id="result" role="status" aria-live="polite">Sin operaciones todavía.</pre><p class="muted">La sincronización se hace al pulsar el botón, no de manera periódica. Si falta la migración D1 o la activación, la operación se rechaza.</p></div><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+async function run(action){
+ const token=$('token').value;
+ if(token.length<32){$('result').textContent='Introduce la clave de administrador completa.';return}
+ const data={action,order_id:$('order').value.trim()};
+ if(action==='link'){
+  data.transaction_id=Number($('transaction').value);
+  data.idempotency_key=$('idem').value.trim();
+ }
+ $('link').disabled=true;$('sync').disabled=true;$('result').textContent='Verificando datos en Sandbox…';
+ try{
+  const r=await fetch('/api/admin/sandbox-order-link',{method:'POST',headers:{'X-Admin-Test-Token':token,'Content-Type':'application/json'},body:JSON.stringify(data),cache:'no-store'});
+  const result=await r.json();
+  $('result').textContent=JSON.stringify({...result,http_response:r.status},null,2);
+ }catch{$('result').textContent='La consulta falló. No se realizó ninguna recarga.'}
+ finally{$('link').disabled=false;$('sync').disabled=false}
+}
+$('link').addEventListener('click',()=>run('link'));
+$('sync').addEventListener('click',()=>run('sync'));
+})();
+</script></body></html>
