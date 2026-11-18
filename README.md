@@ -30,3 +30,13 @@ No subir claves API ni credenciales al repositorio público.
 
 ## Comprobación de integración
 - 2026-11-18: commit de prueba para verificar que Cloudflare Pages detecta cambios automáticamente después de reconectar GitHub.
+
+## Backend Cloudflare Pages (fase 2)
+- `GET /api/status`: verifica por HTTPS el endpoint público `/v1/estado` de Recarga.do y comunica disponibilidad de consulta. No accede a saldos ni ejecuta operaciones.
+- `GET /api/catalog`: catálogo del sandbox **de solo lectura**, desactivado por defecto. Antes de consultar el catálogo verifica que `GET /v1/cuenta` confirme `data.sandbox === true`.
+- Configuración opcional en Cloudflare → Workers & Pages → recarganet-rd → Settings → Variables and Secrets (entorno Production): definir `RECARGA_SANDBOX_KEY` y `RECARGA_SANDBOX_SECRET` como **Secrets** con credenciales de prueba. Nunca introducir credenciales reales ni subirlas a GitHub.
+- Si las credenciales no se configuran, el catálogo permanece desactivado y la demo funciona normalmente.
+- `POST /api/recargas` **no existe** deliberadamente. No hay pagos, compras, autorizaciones ni cuentas de clientes.
+- Documentación oficial de referencia: https://recarga.do/doc/integracion.html
+
+**Seguridad antes de abrir recargas reales:** pedidos persistentes, identidad del usuario, servidor seguro, pasarela de pago confirmada, una clave de idempotencia persistente por pedido, conciliación para estados pendientes, limitación de peticiones, antifraude y pruebas end-to-end. Los servicios de la API pueden cambiar y el catálogo no debe interpretarse como una oferta comercial activa.
