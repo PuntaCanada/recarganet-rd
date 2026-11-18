@@ -42,7 +42,7 @@ test('success syncs only matching pending linked orders',async()=>{
   assert.ok(urls.every(x=>!x.includes('recargas')));
  });
  assert.match(queries[0].sql,/WHERE o.status='pending'/);
- assert.match(queries[0].sql,/l.provider_status IN \('PENDING','PROCESSING'\)/);
+ assert.doesNotMatch(queries[0].sql,/l.provider_status IN/);
  assert.match(queries[1].sql,/AND EXISTS/);
  assert.equal(queries[1].args[0],'success');
 });
