@@ -25,7 +25,7 @@ test('Only a private, separately opted-in sandbox can send',()=>{
  assert.match(api,/sk_sbx_/);
  assert.match(api,/sandbox!==true/);
  assert.match(api,/SANDBOX_PHONES/);
- assert.match(api,/order.operator==='Claro'/);
+ assert.match(api,/o.operator==='Claro'/);
  assert.match(api,/o.amount_dop===100/);
 });
 test('Persist key before single provider POST; conditional claim blocks repetition',()=>{
