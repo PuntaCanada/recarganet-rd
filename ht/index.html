@@ -63,7 +63,7 @@ function cleanPhone(){let digits=phone.value.replace(/\D/g,'');if(digits.startsW
 function validPhone(d){return /^(809|829|849)[0-9]{7}$/.test(d)}
 function limits(){const s=catalog[operator];return s&&Number.isFinite(s.min)&&Number.isFinite(s.max)&&s.min>0&&s.max>=s.min?s:null}
 function validAmount(){const l=limits();return Number.isInteger(amount)&&amount>0&&(!l||(amount>=l.min&&amount<=l.max))}
-function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Pa antre';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simulate top-up · '+fmt(amount);receipt.classList.add('hidden');const l=limits();$('limits').textContent=l?'Sandbox limits: '+fmt(l.min)+' to '+fmt(l.max)+'.':'Montan egzanp; limit operatè yo poko konfime.';for(const b of $('amounts').querySelectorAll('button')){const n=Number(b.dataset.amount);b.disabled=!!l&&(n<l.min||n>l.max);b.style.opacity=b.disabled?'.4':'1'}$('amountError').textContent=validAmount()?'':'Montan an depase limit yo.';}
+function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Pa antre';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simile rechaj · '+fmt(amount);receipt.classList.add('hidden');const l=limits();$('limits').textContent=l?'Limit tès: '+fmt(l.min)+' rive '+fmt(l.max)+'.':'Montan egzanp; limit operatè yo poko konfime.';for(const b of $('amounts').querySelectorAll('button')){const n=Number(b.dataset.amount);b.disabled=!!l&&(n<l.min||n>l.max);b.style.opacity=b.disabled?'.4':'1'}$('amountError').textContent=validAmount()?'':'Montan an depase limit yo.';}
 function choose(group,attribute,callback){group.addEventListener('click',e=>{const button=e.target.closest('button['+attribute+']');if(!button||!group.contains(button))return;for(const b of group.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b===button));callback(button.getAttribute(attribute));error.textContent='';render()})}
 choose($('operators'),'data-operator',v=>operator=v);
 choose($('amounts'),'data-amount',v=>{amount=Number(v);$('customAmount').value=''});
@@ -79,14 +79,14 @@ const response=await fetch('/api/demo-orders',{method:'POST',headers:{'Content-T
 const result=await response.json();
 if(!response.ok||result.mode!=='simulation'||!result.ok)throw new Error(result.error||'DEMO_ERROR');
 lastReceipt='RECARGANET RD - TEST RECEIPT\\nReference: '+result.reference+'\\nDate: '+new Date(result.created_at).toLocaleString('en-US')+'\\nSelected operator: '+operator+'\\nPhone: '+d+'\\nSimulated amount: '+fmt(amount)+'\\nTHIS IS A SIMULATION. NO PAYMENT OR TOP-UP HAS BEEN MADE.';
-$('receiptBody').textContent='Operator: '+operator+' · Phone: '+d+' · Amount: '+fmt(amount)+' · Ref: '+result.reference;
+$('receiptBody').textContent='Operatè: '+operator+' · Telefòn: '+d+' · Montan: '+fmt(amount)+' · Ref: '+result.reference;
 receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'});
 }catch{error.textContent='Nou pa t kapab kreye resi tès la. Eseye ankò.'}
-finally{button.disabled=false;button.textContent='Simulate top-up · '+fmt(amount)}
+finally{button.disabled=false;button.textContent='Simile rechaj · '+fmt(amount)}
 });
 $('download').addEventListener('click',()=>{if(!lastReceipt)return;const blob=new Blob([lastReceipt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='recarganet-comprobante-demo.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)});
 $('year').textContent=new Date().getFullYear();render();
-(async()=>{try{const response=await fetch('/api/status',{cache:'no-store'});const payload=await response.json();$('apiStatus').textContent=response.ok&&payload.ok?'✓ Provider status available (demo only)':'Operatè a pa disponib pou kounye a; demo a toujou mache.'}catch{$('apiStatus').textContent='Nou pa ka verifye koneksyon an; demo a toujou mache.'}})();
+(async()=>{try{const response=await fetch('/api/status',{cache:'no-store'});const payload=await response.json();$('apiStatus').textContent=response.ok&&payload.ok?'✓ Estati operatè a disponib (demo sèlman)':'Operatè a pa disponib pou kounye a; demo a toujou mache.'}catch{$('apiStatus').textContent='Nou pa ka verifye koneksyon an; demo a toujou mache.'}})();
 (async()=>{try{const response=await fetch('/api/catalog',{cache:'no-store'});if(!response.ok)return;const data=await response.json();if(!data.enabled||!Array.isArray(data.services))return;for(const name of Object.keys(serviceIds)){const s=data.services.find(x=>x.id===serviceIds[name]&&String(x.name).toUpperCase()===name.toUpperCase());if(s){catalog[name]={min:Number(s.min),max:Number(s.max)};}}render()}catch{ /* El modo demo siempre funciona sin conexión. */ }})();
 })();
 </script>
