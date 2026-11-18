@@ -40,3 +40,18 @@ No subir claves API ni credenciales al repositorio público.
 - Documentación oficial de referencia: https://recarga.do/doc/integracion.html
 
 **Seguridad antes de abrir recargas reales:** pedidos persistentes, identidad del usuario, servidor seguro, pasarela de pago confirmada, una clave de idempotencia persistente por pedido, conciliación para estados pendientes, limitación de peticiones, antifraude y pruebas end-to-end. Los servicios de la API pueden cambiar y el catálogo no debe interpretarse como una oferta comercial activa.
+
+## Pruebas privadas del sandbox (fase 3)
+- Consola: `/sandbox-admin/`. No es para clientes; sin clave privada no puede hacer transacciones.
+- Endpoint: `POST /api/sandbox-test`. **Deshabilitado por defecto** (HTTP 404).
+- Para habilitarlo solo en el ambiente de pruebas de Cloudflare Pages, configurar:
+  - `RECARGA_SANDBOX_TEST_ENABLED` = `true` (variable)
+  - `RECARGA_TEST_ADMIN_TOKEN` = valor aleatorio secreto de al menos 32 caracteres (tipo **Secret**).
+  - Conservar las credenciales `RECARGA_SANDBOX_KEY` y `RECARGA_SANDBOX_SECRET`; el código rechaza claves sin prefijo sandbox y comprueba `/v1/cuenta` antes de ejecutar.
+- Abrir `/sandbox-admin/`, introducir la clave privada, elegir éxito, rechazo, pendiente o número inválido. El simulador utiliza **solo** el servicio Claro 1, RD$ 100 y números fijos `8095550005`, `8095550001`, `8095550002` y `8095550000`.
+- Para probar el replay, usar el botón «Repetir con la MISMA clave». Una respuesta pendiente o incierta **no** es un fallo definitivo, y nunca se reintenta automáticamente con otra clave.
+- Los identificadores generados se conservan temporalmente en la pestaña durante el test, no en una base de datos. Esta consola NO es un sistema comercial de órdenes ni sirve para dinero real.
+- Al terminar, retirar o desactivar `RECARGA_SANDBOX_TEST_ENABLED` y hacer un nuevo deployment.
+- Nunca publicar ni compartir el token del administrador.
+
+Referencia: https://recarga.do/doc/integracion.html
