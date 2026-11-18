@@ -1,0 +1,9 @@
+# Standalone scheduled Cloudflare Worker; root directory: cron-worker
+# The D1 binding and sandbox secrets are configured in the WORKER dashboard,
+# not in the public repository.
+name = "recarganet-rd-sandbox-monitor"
+main = "src/index.js"
+compatibility_date = "2026-11-18"
+
+[triggers]
+crons = ["*/5 * * * *"]
