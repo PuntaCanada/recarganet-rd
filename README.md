@@ -90,3 +90,19 @@ El código y el panel están preparados, pero **no** se activa una base de datos
 - **Aún NO hay sincronización automática D1**: la tabla de pedidos ficticios no guarda ninguna vinculación verificable con transacciones Recarga.do. Antes de actualizar estados D1 con resultados externos, hay que añadir asociación de transaction ID, importe, servicio y número e introducir un flujo de creación con IDs persistidos. Nunca asociar transacciones por mera coincidencia ni marcar las órdenes de demostración manual como operaciones reales.
 - La consulta sobre una transacción existente tampoco equivale a volver a emitir la recarga.
 - Documentación: https://recarga.do/doc/integracion.html#transacciones
+
+## Vincular pedidos D1 ↔ transacciones sandbox (fase 7)
+**Requiere migración manual en Cloudflare D1 antes de usar.** Esta función NO ejecuta recargas, NO procesa pagos y NO se ejecuta en segundo plano.
+
+1. Cloudflare → Storage & databases → D1 → `recarganet-rd-demo` → Console. Ejecutar los dos comandos en `migrations/002_sandbox_links.sql`. Se crea la tabla `sandbox_order_links` sin modificar los pedidos anteriores.
+2. Cloudflare → Workers & Pages → `recarganet-rd` → Settings → Variables and Secrets. Añadir variable de texto `RECARGA_LINK_SYNC_ENABLED=true` (nuevo opt-in). Mantener `RECARGA_D1_DEMO_ENABLED=true` y `RECARGA_SANDBOX_TEST_ENABLED=false`.
+3. Publicar un deployment actualizado para aplicar los cambios.
+4. Abrir `/sandbox-link-admin/` e introducir un secreto de administrador válido, la referencia de un pedido D1, la `transaction_id` de una transacción Recarga.do Sandbox existente y la idempotency key **original**, capturada en aquella prueba.
+5. Pulsar **Verificar y vincular**. El backend comprueba que el proveedor confirma modo sandbox y que `service_id`, **identificador completo (no enmascarado)** y monto coinciden exactamente. A continuación almacena la asociación única. Se rechazará un identificador no verificable o una transacción asociada a otra orden.
+6. Pulsar **Consultar proveedor y actualizar estado D1**. Una lectura GET del proveedor asigna `SUCCESS→success`, `FAILED/REVERSED→rejected`, `PENDING/PROCESSING→pending`; D1 se actualiza con comparación del estado anterior para evitar escrituras concurrentes.
+7. El editor de estados manuales deja de poder modificar pedidos vinculados. Los pedidos no vinculados siguen siendo datos ficticios.
+8. Verificar el registro en `/demo-orders-admin/`.
+
+**Limitaciones importantes:** la clave de idempotencia se introduce a partir del registro histórico: la consulta por ID de Recarga.do no confirma que pertenezca a esa clave. Esta fase sirve para asociar pruebas históricas tras una verificación estricta, no para procesar ventas reales. La sincronización se ejecuta **solo cuando el administrador pulsa el botón**; todavía no existe seguimiento automático periódico ni una transacción creada y registrada de forma atómica por la plataforma. Las credenciales públicas del sandbox son compartidas; nunca mezclar con producción. Es indispensable rotar el antiguo token de administrador publicado en conversaciones antes de habilitar funcionalidad real y adoptar control de acceso robusto y limitación de intentos.
+
+Ejemplo del historial previo: la transacción Sandbox `84630` corresponde a Claro `8095550005`, RD$ 100, con la idempotency key originalmente registrada en la prueba. Su vinculación debe ser comprobada por el servidor y nunca presumirse solo por coincidencia de importes.
