@@ -24,10 +24,10 @@
 <button type="button" class="choice" data-operator="Viva" aria-pressed="false">🟣 Viva</button>
 </div>
 <h3>2. Número de teléfono</h3><label for="phone">Número dominicano</label><input id="phone" class="field" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="809-555-1234"><div class="hint">Admitimos números con 809, 829 o 849. No verificamos la operadora de ese número.</div><p class="error" id="phoneError" role="alert"></p>
-<h3>3. Elige el monto</h3>
+<h3>3. Elige el monto</h3><p class="hint" id="limits">Consulta del catálogo sandbox pendiente. Montos de ejemplo.</p>
 <div class="amounts" id="amounts">
 <button type="button" class="choice" data-amount="100" aria-pressed="false">RD$ 100</button><button type="button" class="choice" data-amount="200" aria-pressed="true">RD$ 200</button><button type="button" class="choice" data-amount="300" aria-pressed="false">RD$ 300</button><button type="button" class="choice" data-amount="500" aria-pressed="false">RD$ 500</button><button type="button" class="choice" data-amount="1000" aria-pressed="false">RD$ 1,000</button><button type="button" class="choice" data-amount="2000" aria-pressed="false">RD$ 2,000</button>
-</div>
+</div><label for="customAmount" style="margin-top:14px">Otro monto (RD$)</label><input id="customAmount" class="field" type="number" inputmode="numeric" min="25" max="2000" step="1" placeholder="Ej. 30"><p class="error" id="amountError" role="alert"></p>
 <button id="submit" class="cta" type="button">Simular recarga · RD$ 200</button>
 <div id="receipt" class="receipt hidden" aria-live="polite" style="margin-top:20px"><h3>✓ Simulación completada</h3><p id="receiptBody"></p><p><strong>Importante:</strong> no se ha cargado dinero ni saldo al móvil.</p><button id="download" class="cta" type="button">Descargar comprobante de prueba</button></div>
 </section>
@@ -36,20 +36,25 @@
 <footer>© <span id="year"></span> RecargaNet RD · Proyecto en desarrollo · Servicio no disponible para compras reales.</footer>
 <script>
 (()=>{'use strict';
-let operator='Claro',amount=200,lastReceipt='';
+let operator='Claro',amount=200,lastReceipt='',catalog={};
+const serviceIds={Claro:1,Altice:2,Viva:3};
 const $=id=>document.getElementById(id),fmt=n=>'RD$ '+n.toLocaleString('en-US');
 const phone= $('phone'),error=$('phoneError'),receipt=$('receipt');
 function cleanPhone(){let digits=phone.value.replace(/\D/g,'');if(digits.startsWith('1')&&digits.length===11)digits=digits.slice(1);return digits}
 function validPhone(d){return /^(809|829|849)[0-9]{7}$/.test(d)}
-function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Sin indicar';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simular recarga · '+fmt(amount);receipt.classList.add('hidden');}
+function limits(){const s=catalog[operator];return s&&Number.isFinite(s.min)&&Number.isFinite(s.max)&&s.min>0&&s.max>=s.min?s:null}
+function validAmount(){const l=limits();return Number.isInteger(amount)&&amount>0&&(!l||(amount>=l.min&&amount<=l.max))}
+function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Sin indicar';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simular recarga · '+fmt(amount);receipt.classList.add('hidden');const l=limits();$('limits').textContent=l?'Límites del catálogo de prueba: '+fmt(l.min)+' a '+fmt(l.max)+'.':'Montos orientativos; límites del proveedor no confirmados.';for(const b of $('amounts').querySelectorAll('button')){const n=Number(b.dataset.amount);b.disabled=!!l&&(n<l.min||n>l.max);b.style.opacity=b.disabled?'.4':'1'}$('amountError').textContent=validAmount()?'':'El monto está fuera del rango permitido.';}
 function choose(group,attribute,callback){group.addEventListener('click',e=>{const button=e.target.closest('button['+attribute+']');if(!button||!group.contains(button))return;for(const b of group.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b===button));callback(button.getAttribute(attribute));error.textContent='';render()})}
 choose($('operators'),'data-operator',v=>operator=v);
-choose($('amounts'),'data-amount',v=>amount=Number(v));
+choose($('amounts'),'data-amount',v=>{amount=Number(v);$('customAmount').value=''});
+$('customAmount').addEventListener('input',()=>{const v=$('customAmount').value;if(!v)return;amount=Number(v);for(const b of $('amounts').querySelectorAll('button'))b.setAttribute('aria-pressed','false');render()});
 phone.addEventListener('input',()=>{error.textContent='';render()});
-$('submit').addEventListener('click',()=>{const d=cleanPhone();if(!validPhone(d)){error.textContent='Introduce un número dominicano válido de 10 dígitos (809, 829 o 849).';phone.focus();return}const date=new Date().toLocaleString('es-DO');const ref='DEMO-'+Date.now();lastReceipt='RECARGANET RD - COMPROBANTE DE PRUEBA\nReferencia: '+ref+'\nFecha: '+date+'\nOperadora elegida: '+operator+'\nNúmero: '+d+'\nMonto simulado: '+fmt(amount)+'\nESTO ES UNA SIMULACIÓN. NO SE HA REALIZADO NINGÚN PAGO NI RECARGA.';$('receiptBody').textContent='Operadora: '+operator+' · Número: '+d+' · Monto: '+fmt(amount)+' · Ref.: '+ref;receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'})});
+$('submit').addEventListener('click',()=>{const d=cleanPhone();if(!validPhone(d)){error.textContent='Introduce un número dominicano válido de 10 dígitos (809, 829 o 849).';phone.focus();return}if(!validAmount()){ $('amountError').textContent='Selecciona un monto válido según el catálogo sandbox.';$('customAmount').focus();return}const date=new Date().toLocaleString('es-DO');const ref='DEMO-'+Date.now();lastReceipt='RECARGANET RD - COMPROBANTE DE PRUEBA\nReferencia: '+ref+'\nFecha: '+date+'\nOperadora elegida: '+operator+'\nNúmero: '+d+'\nMonto simulado: '+fmt(amount)+'\nESTO ES UNA SIMULACIÓN. NO SE HA REALIZADO NINGÚN PAGO NI RECARGA.';$('receiptBody').textContent='Operadora: '+operator+' · Número: '+d+' · Monto: '+fmt(amount)+' · Ref.: '+ref;receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'})});
 $('download').addEventListener('click',()=>{if(!lastReceipt)return;const blob=new Blob([lastReceipt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='recarganet-comprobante-demo.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)});
 $('year').textContent=new Date().getFullYear();render();
 (async()=>{try{const response=await fetch('/api/status',{cache:'no-store'});const payload=await response.json();$('apiStatus').textContent=response.ok&&payload.ok?'✓ Consulta del proveedor disponible (solo demostración)':'Proveedor no disponible temporalmente; la demo sigue funcionando.'}catch{$('apiStatus').textContent='Consulta no disponible; la demo sigue funcionando.'}})();
+(async()=>{try{const response=await fetch('/api/catalog',{cache:'no-store'});if(!response.ok)return;const data=await response.json();if(!data.enabled||!Array.isArray(data.services))return;for(const name of Object.keys(serviceIds)){const s=data.services.find(x=>x.id===serviceIds[name]&&String(x.name).toUpperCase()===name.toUpperCase());if(s){catalog[name]={min:Number(s.min),max:Number(s.max)};}}render()}catch{ /* El modo demo siempre funciona sin conexión. */ }})();
 })();
 </script>
 </body></html>
