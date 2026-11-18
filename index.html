@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073b43">
+<meta name="description" content="RecargaNet RD: demostración de recargas móviles en República Dominicana. No se procesan pagos ni recargas reales.">
+<title>RecargaNet RD | Demo de recargas</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#15333a;background:#f2f7f8}*{box-sizing:border-box}body{margin:0}header{background:#073b43;color:white;padding:19px max(20px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:22px;font-weight:850;letter-spacing:-.7px}.brand span{color:#49e0ae}.pill{border:1px solid #67c9b4;border-radius:100px;padding:7px 12px;font-size:12px;color:#b3f8e2}.top{padding:50px 20px 95px;background:linear-gradient(130deg,#073b43,#076e73);color:white;text-align:center}.top h1{font-size:clamp(30px,5vw,54px);line-height:1.12;margin:0 auto 16px;max-width:700px}.top p{max-width:610px;margin:0 auto;color:#d3edeb;line-height:1.65}.wrap{max-width:1020px;margin:-55px auto 0;padding:0 20px 45px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px;align-items:start}.panel{background:white;border:1px solid #dce7e9;border-radius:22px;padding:27px;box-shadow:0 13px 34px #06383f12}h2{margin:0 0 20px;font-size:23px}h3{margin:26px 0 11px;font-size:15px}label{display:block;font-weight:700;font-size:14px;margin:0 0 10px}.operators,.amounts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.choice{border:2px solid #d9e6e8;background:#fff;border-radius:13px;padding:15px 8px;cursor:pointer;font-weight:750;color:#16414a;min-height:54px}.choice[aria-pressed=true]{background:#e4f9f1;border-color:#079b77;color:#04664d}.choice:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f4ab36;outline-offset:2px}.field{width:100%;padding:15px;border:2px solid #d9e6e8;border-radius:12px;font-size:17px;letter-spacing:.4px}.hint{font-size:12px;color:#61767c;margin-top:7px}.error{font-size:13px;color:#b42222;min-height:20px;margin:7px 0}.cta{border:0;border-radius:13px;background:#078f70;color:#fff;font-size:16px;font-weight:800;padding:17px;width:100%;cursor:pointer;margin-top:15px}.cta:hover{background:#067459}.note{padding:12px 14px;background:#fff7db;border:1px solid #eacf82;border-radius:12px;color:#674f17;font-size:13px;line-height:1.5;margin-bottom:19px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e5eef0;font-size:14px}.summary-row strong{color:#123a41}.summary-row.total{font-size:20px;border-bottom:0}.safe{font-size:12px;line-height:1.55;color:#5a7278;margin-top:22px}.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tag{border:1px solid #dce7e9;border-radius:8px;padding:7px 9px;font-size:12px;font-weight:750}.receipt{background:#effaf5;border:1px solid #bce9d5;border-radius:14px;padding:18px;line-height:1.65}.receipt h3{color:#09694e;margin:0 0 10px}.receipt p{margin:4px 0}.hidden{display:none}footer{text-align:center;padding:25px 15px;color:#59757d;font-size:12px}a{color:inherit}@media(max-width:760px){.wrap{grid-template-columns:1fr}.panel{padding:19px}.top{padding-top:40px}.operators,.amounts{gap:7px}.choice{padding:12px 3px}header{padding:15px 18px}.brand{font-size:19px}}
+</style>
+</head>
+<body>
+<header><div class="brand">Recarga<span>Net</span> RD</div><div class="pill">DEMO · Sin pagos reales</div></header>
+<section class="top"><h1>Recarga tu móvil de forma fácil</h1><p>Claro, Altice y Viva en una sola plataforma. Explora cómo funcionaría nuestro servicio de recargas en República Dominicana.</p></section>
+<main class="wrap">
+<section class="panel">
+<div class="note"><strong>Modo de demostración.</strong> Esta página no cobra dinero, no conecta con operadoras y no realiza recargas reales. No introduzcas datos bancarios.</div>
+<h2>Haz tu recarga de prueba</h2>
+<h3>1. Elige tu compañía</h3>
+<div class="operators" id="operators">
+<button type="button" class="choice" data-operator="Claro" aria-pressed="true">🔴 Claro</button>
+<button type="button" class="choice" data-operator="Altice" aria-pressed="false">🔵 Altice</button>
+<button type="button" class="choice" data-operator="Viva" aria-pressed="false">🟣 Viva</button>
+</div>
+<h3>2. Número de teléfono</h3><label for="phone">Número dominicano</label><input id="phone" class="field" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="809-555-1234"><div class="hint">Admitimos números con 809, 829 o 849. No verificamos la operadora de ese número.</div><p class="error" id="phoneError" role="alert"></p>
+<h3>3. Elige el monto</h3>
+<div class="amounts" id="amounts">
+<button type="button" class="choice" data-amount="100" aria-pressed="false">RD$ 100</button><button type="button" class="choice" data-amount="200" aria-pressed="true">RD$ 200</button><button type="button" class="choice" data-amount="300" aria-pressed="false">RD$ 300</button><button type="button" class="choice" data-amount="500" aria-pressed="false">RD$ 500</button><button type="button" class="choice" data-amount="1000" aria-pressed="false">RD$ 1,000</button><button type="button" class="choice" data-amount="2000" aria-pressed="false">RD$ 2,000</button>
+</div>
+<button id="submit" class="cta" type="button">Simular recarga · RD$ 200</button>
+<div id="receipt" class="receipt hidden" aria-live="polite" style="margin-top:20px"><h3>✓ Simulación completada</h3><p id="receiptBody"></p><p><strong>Importante:</strong> no se ha cargado dinero ni saldo al móvil.</p><button id="download" class="cta" type="button">Descargar comprobante de prueba</button></div>
+</section>
+<aside class="panel"><h2>Resumen</h2><div class="summary-row"><span>Compañía</span><strong id="summaryOperator">Claro</strong></div><div class="summary-row"><span>Teléfono</span><strong id="summaryPhone">Sin indicar</strong></div><div class="summary-row"><span>Recarga</span><strong id="summaryAmount">RD$ 200</strong></div><div class="summary-row"><span>Cargo por servicio</span><strong>RD$ 0</strong></div><div class="summary-row total"><strong>Total de prueba</strong><strong id="summaryTotal">RD$ 200</strong></div><h3>Métodos de pago previstos</h3><div class="tags"><span class="tag">VISA</span><span class="tag">Mastercard</span><span class="tag">American Express</span><span class="tag">PayPal</span></div><p class="safe">Los métodos de pago mostrados son solo una vista previa. No se aceptan pagos ni se almacenan datos de tarjetas. Las tarifas y montos definitivos dependen de los futuros proveedores.</p></aside>
+</main>
+<footer>© <span id="year"></span> RecargaNet RD · Proyecto en desarrollo · Servicio no disponible para compras reales.</footer>
+<script>
+(()=>{'use strict';
+let operator='Claro',amount=200,lastReceipt='';
+const $=id=>document.getElementById(id),fmt=n=>'RD$ '+n.toLocaleString('en-US');
+const phone= $('phone'),error=$('phoneError'),receipt=$('receipt');
+function cleanPhone(){let digits=phone.value.replace(/\D/g,'');if(digits.startsWith('1')&&digits.length===11)digits=digits.slice(1);return digits}
+function validPhone(d){return /^(809|829|849)[0-9]{7}$/.test(d)}
+function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Sin indicar';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simular recarga · '+fmt(amount);receipt.classList.add('hidden');}
+function choose(group,attribute,callback){group.addEventListener('click',e=>{const button=e.target.closest('button['+attribute+']');if(!button||!group.contains(button))return;for(const b of group.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b===button));callback(button.getAttribute(attribute));error.textContent='';render()})}
+choose($('operators'),'data-operator',v=>operator=v);
+choose($('amounts'),'data-amount',v=>amount=Number(v));
+phone.addEventListener('input',()=>{error.textContent='';render()});
+$('submit').addEventListener('click',()=>{const d=cleanPhone();if(!validPhone(d)){error.textContent='Introduce un número dominicano válido de 10 dígitos (809, 829 o 849).';phone.focus();return}const date=new Date().toLocaleString('es-DO');const ref='DEMO-'+Date.now();lastReceipt='RECARGANET RD - COMPROBANTE DE PRUEBA\nReferencia: '+ref+'\nFecha: '+date+'\nOperadora elegida: '+operator+'\nNúmero: '+d+'\nMonto simulado: '+fmt(amount)+'\nESTO ES UNA SIMULACIÓN. NO SE HA REALIZADO NINGÚN PAGO NI RECARGA.';$('receiptBody').textContent='Operadora: '+operator+' · Número: '+d+' · Monto: '+fmt(amount)+' · Ref.: '+ref;receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'})});
+$('download').addEventListener('click',()=>{if(!lastReceipt)return;const blob=new Blob([lastReceipt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='recarganet-comprobante-demo.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)});
+$('year').textContent=new Date().getFullYear();render();
+})();
+</script>
+</body></html>
