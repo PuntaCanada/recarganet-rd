@@ -27,3 +27,26 @@ test('Server validates operator, amount and phone and makes only simulation',()=
  assert.match(api,/mode:'simulation'/);
  assert.doesNotMatch(api,/api\.recarga\.do|fetch\(/);
 });
+
+test('Browser language chooses correct landing page, and explicit selection overrides it',()=>{
+ function check(page,locale,saved,expected){
+  const html=page==='en'?en:es;
+  const src=html.match(/<script>\s*\/\* Locale routing:[\s\S]*?<\/script>/)?.[0]?.replace(/^<script>/,'').replace(/<\/script>$/,'');
+  assert.ok(src,'Automatic locale routing missing');
+  const links=[{lang:'es',events:{},addEventListener(k,fn){this.events[k]=fn}},{lang:'en',events:{},addEventListener(k,fn){this.events[k]=fn}}];
+  const storage={v:saved,getItem(){return this.v},setItem(_k,value){this.v=value}};
+  const location={pathname:page==='en'?'/en/':'/',search:'',hash:'',replaced:null,replace(url){this.replaced=url}};
+  const doc={addEventListener(_k,fn){fn()},querySelectorAll(){return links}};
+  vm.runInNewContext(src,{navigator:{languages:[locale],language:locale},localStorage:storage,document:doc,location});
+  assert.equal(location.replaced,expected,'Wrong landing page for '+locale+' and '+page);
+  links[1].events.click();
+  assert.equal(storage.v,'en','Manual English preference was not saved');
+ }
+ check('es','es-DO',null,null);
+ check('es','en-US',null,'/en/');
+ check('es','de-DE',null,'/en/');
+ check('es','pt-BR',null,null);
+ check('en','es-DO',null,'/');
+ check('en','es-DO','en',null);
+ check('es','en-US','es',null);
+});
