@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073b43">
+<meta name="description" content="RecargaNet RD: mobile top-up demonstration in the Dominican Republic. No real payments or top-ups.">
+<title>RecargaNet RD | Demonstrasyon rechaj telefòn</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#15333a;background:#f2f7f8}*{box-sizing:border-box}body{margin:0}header{background:#073b43;color:white;padding:19px max(20px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:22px;font-weight:850;letter-spacing:-.7px}.brand span{color:#49e0ae}.pill{border:1px solid #67c9b4;border-radius:100px;padding:7px 12px;font-size:12px;color:#b3f8e2}.top{padding:50px 20px 95px;background:linear-gradient(130deg,#073b43,#076e73);color:white;text-align:center}.top h1{font-size:clamp(30px,5vw,54px);line-height:1.12;margin:0 auto 16px;max-width:700px}.top p{max-width:610px;margin:0 auto;color:#d3edeb;line-height:1.65}.wrap{max-width:1020px;margin:-55px auto 0;padding:0 20px 45px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px;align-items:start}.panel{background:white;border:1px solid #dce7e9;border-radius:22px;padding:27px;box-shadow:0 13px 34px #06383f12}h2{margin:0 0 20px;font-size:23px}h3{margin:26px 0 11px;font-size:15px}label{display:block;font-weight:700;font-size:14px;margin:0 0 10px}.operators,.amounts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.choice{border:2px solid #d9e6e8;background:#fff;border-radius:13px;padding:15px 8px;cursor:pointer;font-weight:750;color:#16414a;min-height:54px}.choice[aria-pressed=true]{background:#e4f9f1;border-color:#079b77;color:#04664d}.choice:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #f4ab36;outline-offset:2px}.field{width:100%;padding:15px;border:2px solid #d9e6e8;border-radius:12px;font-size:17px;letter-spacing:.4px}.hint{font-size:12px;color:#61767c;margin-top:7px}.error{font-size:13px;color:#b42222;min-height:20px;margin:7px 0}.cta{border:0;border-radius:13px;background:#078f70;color:#fff;font-size:16px;font-weight:800;padding:17px;width:100%;cursor:pointer;margin-top:15px}.cta:hover{background:#067459}.note{padding:12px 14px;background:#fff7db;border:1px solid #eacf82;border-radius:12px;color:#674f17;font-size:13px;line-height:1.5;margin-bottom:19px}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e5eef0;font-size:14px}.summary-row strong{color:#123a41}.summary-row.total{font-size:20px;border-bottom:0}.safe{font-size:12px;line-height:1.55;color:#5a7278;margin-top:22px}.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tag{border:1px solid #dce7e9;border-radius:8px;padding:7px 9px;font-size:12px;font-weight:750}.receipt{background:#effaf5;border:1px solid #bce9d5;border-radius:14px;padding:18px;line-height:1.65}.receipt h3{color:#09694e;margin:0 0 10px}.receipt p{margin:4px 0}.hidden{display:none}footer{text-align:center;padding:25px 15px;color:#59757d;font-size:12px}a{color:inherit}@media(max-width:760px){.wrap{grid-template-columns:1fr}.panel{padding:19px}.top{padding-top:40px}.operators,.amounts{gap:7px}.choice{padding:12px 3px}header{padding:15px 18px}.brand{font-size:19px}}
+.language-switch{display:flex;align-items:center;gap:4px;padding:4px;background:#ffffff16;border:1px solid #ffffff42;border-radius:99px}.language-switch svg{display:block;flex-shrink:0;border-radius:2px;box-shadow:0 0 0 1px #0002}.language-switch a{display:flex;align-items:center;gap:5px;padding:7px 10px;border-radius:99px;color:#fff;text-decoration:none;font-size:13px;font-weight:750;white-space:nowrap}.language-switch a[aria-current="page"]{background:#fff;color:#073b43}.language-switch a:hover:not([aria-current="page"]){background:#ffffff30}.language-switch a:focus-visible{outline:3px solid #f4ab36;outline-offset:2px}@media(max-width:420px){.language-switch a{padding:7px 6px;font-size:12px}.language-switch a span{display:none}header .pill{font-size:10px;padding:6px 7px}}
+.language-switch{position:relative;flex-wrap:wrap}.more-languages{position:relative}.more-languages summary{list-style:none;cursor:pointer;border-radius:99px;padding:7px 10px;color:#fff;font-size:13px;font-weight:750;white-space:nowrap}.more-languages summary::-webkit-details-marker{display:none}.more-languages[open] summary{background:#ffffff30}.languages-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:210px;z-index:40;background:#fff;border:1px solid #c8dadd;border-radius:12px;box-shadow:0 12px 30px #0003;padding:6px}.language-switch .languages-panel a{display:flex;color:#173740;padding:9px 12px;gap:9px;border-radius:7px}.language-switch .languages-panel a:hover,.language-switch .languages-panel a[aria-current="page"]{background:#e1f3f0;color:#073b43}.locale-code{font-size:11px;font-weight:800;background:#e5f0f2;border-radius:4px;padding:2px 4px;min-width:25px;text-align:center}@media(max-width:620px){header{flex-wrap:wrap;padding-top:12px;padding-bottom:12px}.language-switch{order:3;width:100%;justify-content:center}.more-languages summary{font-size:12px}.languages-panel{right:0}}</style>
+<script>
+(function(){
+ const routes={es:'/',en:'/en/',de:'/de/',fr:'/fr/',ht:'/ht/',pt:'/pt/'};
+ const storageKey='recarganet-language';
+ let selected=null;
+ try{const stored=localStorage.getItem(storageKey);if(routes[stored])selected=stored}catch(_){}
+ const locale=(navigator.languages&&navigator.languages[0])||navigator.language||'';
+ const primary=String(locale).toLowerCase().split('-')[0];
+ const inferred=routes[primary]?primary:['it','nl'].includes(primary)?'en':'es';
+ const desired=selected||inferred;
+ if(location.pathname.replace(/\/$/,'/')!==routes[desired])location.replace(routes[desired]+location.search+location.hash);
+ document.addEventListener('DOMContentLoaded',()=>{
+  for(const link of document.querySelectorAll('.language-switch a[lang]')){
+   link.addEventListener('click',()=>{try{localStorage.setItem(storageKey,link.lang)}catch(_){}});
+  }
+ });
+})();
+</script>
+</head>
+<body>
+<header><div class="brand">Recarga<span>Net</span> RD</div><nav class="language-switch" aria-label="Idioma / Language"><a href="/" lang="es" hreflang="es" aria-label="Español" ><svg viewBox="0 0 32 22" width="25" height="17" aria-hidden="true"><rect width="32" height="22" fill="#fff"/><rect x="0" y="0" width="13" height="8" fill="#002d62"/><rect x="19" y="0" width="13" height="8" fill="#ce1126"/><rect x="0" y="14" width="13" height="8" fill="#ce1126"/><rect x="19" y="14" width="13" height="8" fill="#002d62"/><circle cx="16" cy="11" r="2" fill="#007a33"/></svg> <span>Español</span></a><a href="/en/" lang="en" hreflang="en" aria-label="English"><svg viewBox="0 0 32 22" width="25" height="17" aria-hidden="true"><rect width="32" height="22" fill="#fff"/><g fill="#b22234"><path d="M0 0h32v2H0zm0 4h32v2H0zm0 4h32v2H0zm0 4h32v2H0zm0 4h32v2H0zm0 4h32v2H0z"/></g><rect width="13" height="12" fill="#3c3b6e"/><g fill="#fff"><circle cx="3" cy="2.5" r=".7"/><circle cx="7" cy="2.5" r=".7"/><circle cx="11" cy="2.5" r=".7"/><circle cx="5" cy="5.5" r=".7"/><circle cx="9" cy="5.5" r=".7"/><circle cx="3" cy="8.5" r=".7"/><circle cx="7" cy="8.5" r=".7"/><circle cx="11" cy="8.5" r=".7"/></g></svg> <span>English</span></a><details class="more-languages"><summary>🌐 <span data-more-languages>Lang</span></summary><div class="languages-panel"><a href="/de/" lang="de" hreflang="de" ><span class="locale-code">DE</span>Deutsch</a><a href="/fr/" lang="fr" hreflang="fr" ><span class="locale-code">FR</span>Français</a><a href="/ht/" lang="ht" hreflang="ht" aria-current="page"><span class="locale-code">HT</span>Kreyòl ayisyen</a><a href="/pt/" lang="pt" hreflang="pt" ><span class="locale-code">PT</span>Português</a></div></details></nav><div class="pill">DEMO · Pa gen peman reyèl</div></header>
+<section class="top"><h1>Rechaje telefòn ou nan kèk segonn</h1><p>Claro, Altice ak Viva nan yon sèl kote. Gade kijan sèvis rechaj nou an pou Repiblik Dominikèn ta ka fonksyone.</p></section>
+<main class="wrap">
+<section class="panel">
+<div class="note"><strong>Mòd demonstrasyon.</strong> Nou pa retire lajan e nou pa mete kredi reyèl sou telefòn ou. Pa antre enfòmasyon kat labank ou.</div>
+<h2>Eseye yon rechaj tès</h2>
+<h3>1. Chwazi operatè telefòn ou</h3>
+<div class="operators" id="operators">
+<button type="button" class="choice" data-operator="Claro" aria-pressed="true">🔴 Claro</button>
+<button type="button" class="choice" data-operator="Altice" aria-pressed="false">🔵 Altice</button>
+<button type="button" class="choice" data-operator="Viva" aria-pressed="false">🟣 Viva</button>
+</div>
+<h3>2. Nimewo telefòn</h3><label for="phone">Nimewo telefòn dominiken</label><input id="phone" class="field" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="809-555-1234"><div class="hint">Nimewo a dwe kòmanse ak 809, 829 oswa 849. Nou pa ka verifye operatè yon nimewo ki transfere.</div><p class="error" id="phoneError" role="alert"></p>
+<h3>3. Chwazi yon montan</h3><p class="hint" id="limits">N ap chaje katalòg tès la. Men kèk montan kòm egzanp.</p>
+<div class="amounts" id="amounts">
+<button type="button" class="choice" data-amount="100" aria-pressed="false">RD$ 100</button><button type="button" class="choice" data-amount="200" aria-pressed="true">RD$ 200</button><button type="button" class="choice" data-amount="300" aria-pressed="false">RD$ 300</button><button type="button" class="choice" data-amount="500" aria-pressed="false">RD$ 500</button><button type="button" class="choice" data-amount="1000" aria-pressed="false">RD$ 1,000</button><button type="button" class="choice" data-amount="2000" aria-pressed="false">RD$ 2,000</button>
+</div><label for="customAmount" style="margin-top:14px">Lòt montan (RD$)</label><input id="customAmount" class="field" type="number" inputmode="numeric" min="25" max="2000" step="1" placeholder="Ej. 30"><p class="error" id="amountError" role="alert"></p>
+<button id="submit" class="cta" type="button">Simulate top-up · RD$ 200</button>
+<div id="receipt" class="receipt hidden" aria-live="polite" style="margin-top:20px"><h3>✓ Kòmann tès la fèt</h3><p id="receiptBody"></p><p><strong>Enpòtan:</strong> nou pa pran okenn peman e nou pa ajoute okenn kredi sou telefòn.</p><button id="download" class="cta" type="button">Telechaje resi tès la</button></div>
+</section>
+<aside class="panel"><h2>Rezime kòmann</h2><div class="summary-row"><span>Operatè</span><strong id="summaryOperator">Claro</strong></div><div class="summary-row"><span>Telefòn</span><strong id="summaryPhone">Sin indicar</strong></div><div class="summary-row"><span>Rechaj</span><strong id="summaryAmount">RD$ 200</strong></div><div class="summary-row"><span>Frè sèvis</span><strong>RD$ 0</strong></div><div class="summary-row total"><strong>Total demonstrasyon</strong><strong id="summaryTotal">RD$ 200</strong></div><h3>Estati koneksyon</h3><p id="apiStatus" class="safe" role="status">N ap verifye koneksyon ak operatè a…</p><h3>Metòd peman nou anvizaje</h3><div class="tags"><span class="tag">VISA</span><span class="tag">Mastercard</span><span class="tag">American Express</span><span class="tag">PayPal</span></div><p class="safe">Metòd peman sa yo se yon egzanp sèlman. Nou pa aksepte peman e nou pa konsève enfòmasyon kat labank. Pri final yo ap depann de patnè nan lavni.</p></aside>
+</main>
+<footer>© <span id="year"></span> RecargaNet RD · Under development · Real purchases are not available.</footer>
+<script>
+(()=>{'use strict';
+let operator='Claro',amount=200,lastReceipt='',catalog={};
+const serviceIds={Claro:1,Altice:2,Viva:3};
+const $=id=>document.getElementById(id),fmt=n=>'RD$ '+n.toLocaleString('en-US');
+const phone= $('phone'),error=$('phoneError'),receipt=$('receipt');
+function cleanPhone(){let digits=phone.value.replace(/\D/g,'');if(digits.startsWith('1')&&digits.length===11)digits=digits.slice(1);return digits}
+function validPhone(d){return /^(809|829|849)[0-9]{7}$/.test(d)}
+function limits(){const s=catalog[operator];return s&&Number.isFinite(s.min)&&Number.isFinite(s.max)&&s.min>0&&s.max>=s.min?s:null}
+function validAmount(){const l=limits();return Number.isInteger(amount)&&amount>0&&(!l||(amount>=l.min&&amount<=l.max))}
+function render(){const d=cleanPhone();$('summaryOperator').textContent=operator;$('summaryPhone').textContent=d.length?d:'Pa antre';$('summaryAmount').textContent=fmt(amount);$('summaryTotal').textContent=fmt(amount);$('submit').textContent='Simulate top-up · '+fmt(amount);receipt.classList.add('hidden');const l=limits();$('limits').textContent=l?'Sandbox limits: '+fmt(l.min)+' to '+fmt(l.max)+'.':'Montan egzanp; limit operatè yo poko konfime.';for(const b of $('amounts').querySelectorAll('button')){const n=Number(b.dataset.amount);b.disabled=!!l&&(n<l.min||n>l.max);b.style.opacity=b.disabled?'.4':'1'}$('amountError').textContent=validAmount()?'':'Montan an depase limit yo.';}
+function choose(group,attribute,callback){group.addEventListener('click',e=>{const button=e.target.closest('button['+attribute+']');if(!button||!group.contains(button))return;for(const b of group.querySelectorAll('button'))b.setAttribute('aria-pressed',String(b===button));callback(button.getAttribute(attribute));error.textContent='';render()})}
+choose($('operators'),'data-operator',v=>operator=v);
+choose($('amounts'),'data-amount',v=>{amount=Number(v);$('customAmount').value=''});
+$('customAmount').addEventListener('input',()=>{const v=$('customAmount').value;if(!v)return;amount=Number(v);for(const b of $('amounts').querySelectorAll('button'))b.setAttribute('aria-pressed','false');render()});
+phone.addEventListener('input',()=>{error.textContent='';render()});
+$('submit').addEventListener('click',async()=>{
+const d=cleanPhone();
+if(!validPhone(d)){error.textContent='Antre yon nimewo dominiken valab ki gen 10 chif (809, 829 oswa 849).';phone.focus();return}
+if(!validAmount()){$('amountError').textContent='Chwazi yon montan valab nan limit tès yo.';$('customAmount').focus();return}
+const button=$('submit');button.disabled=true;button.textContent='N ap prepare resi tès la…';
+try{
+const response=await fetch('/api/demo-orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({operator,phone:d,amount})});
+const result=await response.json();
+if(!response.ok||result.mode!=='simulation'||!result.ok)throw new Error(result.error||'DEMO_ERROR');
+lastReceipt='RECARGANET RD - TEST RECEIPT\\nReference: '+result.reference+'\\nDate: '+new Date(result.created_at).toLocaleString('en-US')+'\\nSelected operator: '+operator+'\\nPhone: '+d+'\\nSimulated amount: '+fmt(amount)+'\\nTHIS IS A SIMULATION. NO PAYMENT OR TOP-UP HAS BEEN MADE.';
+$('receiptBody').textContent='Operator: '+operator+' · Phone: '+d+' · Amount: '+fmt(amount)+' · Ref: '+result.reference;
+receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'});
+}catch{error.textContent='Nou pa t kapab kreye resi tès la. Eseye ankò.'}
+finally{button.disabled=false;button.textContent='Simulate top-up · '+fmt(amount)}
+});
+$('download').addEventListener('click',()=>{if(!lastReceipt)return;const blob=new Blob([lastReceipt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='recarganet-comprobante-demo.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)});
+$('year').textContent=new Date().getFullYear();render();
+(async()=>{try{const response=await fetch('/api/status',{cache:'no-store'});const payload=await response.json();$('apiStatus').textContent=response.ok&&payload.ok?'✓ Provider status available (demo only)':'Operatè a pa disponib pou kounye a; demo a toujou mache.'}catch{$('apiStatus').textContent='Nou pa ka verifye koneksyon an; demo a toujou mache.'}})();
+(async()=>{try{const response=await fetch('/api/catalog',{cache:'no-store'});if(!response.ok)return;const data=await response.json();if(!data.enabled||!Array.isArray(data.services))return;for(const name of Object.keys(serviceIds)){const s=data.services.find(x=>x.id===serviceIds[name]&&String(x.name).toUpperCase()===name.toUpperCase());if(s){catalog[name]={min:Number(s.min),max:Number(s.max)};}}render()}catch{ /* El modo demo siempre funciona sin conexión. */ }})();
+})();
+</script>
+</body></html>
