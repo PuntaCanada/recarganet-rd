@@ -11,7 +11,7 @@
 </style>
 </head>
 <body>
-<header><div class="brand">Recarga<span>Net</span> RD</div><div class="pill">DEMO · Sin pagos reales</div></header>
+<header><div class="brand">Recarga<span>Net</span> RD</div><nav aria-label="Idioma / Language" style="display:flex;gap:12px;align-items:center"><a href="/" aria-current="page" style="font-weight:800">ES</a><a href="/en/" hreflang="en">EN</a></nav><div class="pill">DEMO · Sin pagos reales</div></header>
 <section class="top"><h1>Recarga tu móvil de forma fácil</h1><p>Claro, Altice y Viva en una sola plataforma. Explora cómo funcionaría nuestro servicio de recargas en República Dominicana.</p></section>
 <main class="wrap">
 <section class="panel">
@@ -50,7 +50,21 @@ choose($('operators'),'data-operator',v=>operator=v);
 choose($('amounts'),'data-amount',v=>{amount=Number(v);$('customAmount').value=''});
 $('customAmount').addEventListener('input',()=>{const v=$('customAmount').value;if(!v)return;amount=Number(v);for(const b of $('amounts').querySelectorAll('button'))b.setAttribute('aria-pressed','false');render()});
 phone.addEventListener('input',()=>{error.textContent='';render()});
-$('submit').addEventListener('click',()=>{const d=cleanPhone();if(!validPhone(d)){error.textContent='Introduce un número dominicano válido de 10 dígitos (809, 829 o 849).';phone.focus();return}if(!validAmount()){ $('amountError').textContent='Selecciona un monto válido según el catálogo sandbox.';$('customAmount').focus();return}const date=new Date().toLocaleString('es-DO');const ref='DEMO-'+Date.now();lastReceipt='RECARGANET RD - COMPROBANTE DE PRUEBA\nReferencia: '+ref+'\nFecha: '+date+'\nOperadora elegida: '+operator+'\nNúmero: '+d+'\nMonto simulado: '+fmt(amount)+'\nESTO ES UNA SIMULACIÓN. NO SE HA REALIZADO NINGÚN PAGO NI RECARGA.';$('receiptBody').textContent='Operadora: '+operator+' · Número: '+d+' · Monto: '+fmt(amount)+' · Ref.: '+ref;receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'})});
+$('submit').addEventListener('click',async()=>{
+const d=cleanPhone();
+if(!validPhone(d)){error.textContent='Introduce un número dominicano válido de 10 dígitos (809, 829 o 849).';phone.focus();return}
+if(!validAmount()){$('amountError').textContent='Selecciona un monto válido según el catálogo sandbox.';$('customAmount').focus();return}
+const button=$('submit');button.disabled=true;button.textContent='Preparando comprobante de prueba…';
+try{
+const response=await fetch('/api/demo-orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({operator,phone:d,amount})});
+const result=await response.json();
+if(!response.ok||result.mode!=='simulation'||!result.ok)throw new Error(result.error||'DEMO_ERROR');
+lastReceipt='RECARGANET RD - COMPROBANTE DE PRUEBA\\nReferencia: '+result.reference+'\\nFecha: '+new Date(result.created_at).toLocaleString('es-DO')+'\\nOperadora elegida: '+operator+'\\nNúmero: '+d+'\\nMonto simulado: '+fmt(amount)+'\\nESTO ES UNA SIMULACIÓN. NO SE HA REALIZADO NINGÚN PAGO NI RECARGA.';
+$('receiptBody').textContent='Operadora: '+operator+' · Número: '+d+' · Monto: '+fmt(amount)+' · Ref.: '+result.reference;
+receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'});
+}catch{error.textContent='No se pudo crear el comprobante de prueba. Inténtalo de nuevo.'}
+finally{button.disabled=false;button.textContent='Simular recarga · '+fmt(amount)}
+});
 $('download').addEventListener('click',()=>{if(!lastReceipt)return;const blob=new Blob([lastReceipt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='recarganet-comprobante-demo.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)});
 $('year').textContent=new Date().getFullYear();render();
 (async()=>{try{const response=await fetch('/api/status',{cache:'no-store'});const payload=await response.json();$('apiStatus').textContent=response.ok&&payload.ok?'✓ Consulta del proveedor disponible (solo demostración)':'Proveedor no disponible temporalmente; la demo sigue funcionando.'}catch{$('apiStatus').textContent='Consulta no disponible; la demo sigue funcionando.'}})();
