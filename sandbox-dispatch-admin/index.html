@@ -1,0 +1,36 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>RecargaNet RD · Despacho controlado Sandbox</title>
+<style>*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;color:#143d42;background:#f1f7f7;margin:0;padding:24px}.card{max-width:700px;margin:0 auto 16px;background:white;border:1px solid #d7e6e5;border-radius:16px;padding:24px}h1{font-size:25px}.notice{padding:14px;border:1px solid #e7c780;background:#fff4d8;border-radius:10px;line-height:1.5}label{display:block;font-weight:700;margin:16px 0 8px}input,button{font:inherit;width:100%;padding:13px;border-radius:9px}input{border:1px solid #b7c9ca}button{background:#087f66;color:#fff;border:0;cursor:pointer;margin-top:12px}button:disabled{opacity:.5;cursor:wait}button.secondary{background:#fff;border:1px solid #087f66;color:#087f66}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#ecf5f5;padding:13px;border-radius:9px}p{line-height:1.5}a{color:#087f66}small{color:#526f74}</style>
+</head><body><div class="card"><p><a href="/checkout-lab/">← Laboratorio de pedidos</a></p><h1>Despacho controlado en Recarga.do Sandbox</h1>
+<p class="notice"><strong>Solo administrador, solo números ficticios.</strong> Primero se guarda una clave de idempotencia exclusiva del pedido en D1. Después, si la función fue habilitada explícitamente, un único envío de prueba usa esa clave. Si hay timeout o respuesta desconocida, <strong>no se reenvía automáticamente</strong>. Nunca existe un cargo real.</p>
+<label for="token">Clave privada del administrador</label><input type="password" id="token" autocomplete="off" spellcheck="false">
+<label for="reference">Referencia D1 del pedido</label><input id="reference" autocomplete="off" spellcheck="false" placeholder="D1-DEMO-...">
+<p><small>Solo Claro, RD$ 100, y números de laboratorio 8095550005, 8095550001 o 8095550002. La orden debe estar en estado created y no vinculada.</small></p>
+<button id="prepare" type="button" class="secondary">1. Preparar y guardar clave de idempotencia en D1</button>
+<button id="send" type="button" disabled>2. Enviar una sola vez a la Sandbox</button>
+<p><small>La segunda acción requiere la variable independiente RECARGA_SANDBOX_ORDER_SEND_ENABLED=true en Cloudflare Pages, y solo debe habilitarse después de probar y rotar la clave de administrador expuesta anteriormente.</small></p>
+<h2>Resultado</h2><pre id="result" role="status" aria-live="polite">Sin ejecutar.</pre>
+<p><small>Un pedido creado no implica saldo entregado. Después de vincular la transacción, el monitor Cron existente puede actualizar el estado del pedido pendiente.</small></p></div>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id);let preparedReference=null;
+$('reference').addEventListener('input',()=>{preparedReference=null;$('send').disabled=true});
+async function run(action){
+ const key=$('token').value,order_id=$('reference').value.trim();
+ if(key.length<32){$('result').textContent='Introduce la clave privada completa.';return}
+ if(!/^D1-DEMO-[0-9a-f-]{36}$/i.test(order_id)){$('result').textContent='Introduce la referencia D1 válida.';return}
+ if(action==='send'&&preparedReference!==order_id){$('result').textContent='Prepara primero este mismo pedido.';return}
+ if(action==='send'&&!confirm('Se realizará UN envío en Recarga.do Sandbox para este pedido ficticio. ¿Continuar?'))return;
+ $('prepare').disabled=true;$('send').disabled=true;$('result').textContent='Procesando de manera segura…';
+ try{
+  const response=await fetch('/api/admin/sandbox-order-dispatch',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Test-Token':key},body:JSON.stringify({action,order_id}),cache:'no-store'});
+  const data=await response.json();
+  $('result').textContent=JSON.stringify({...data,http_response:response.status},null,2);
+  if(action==='prepare'&&data.ok&&data.phase==='prepared'){preparedReference=order_id;$('send').disabled=false}
+  else preparedReference=null;
+ }catch{$('result').textContent='Resultado desconocido. NO vuelvas a enviarlo: primero revisa el registro D1.';preparedReference=null}
+ finally{$('prepare').disabled=false}
+}
+$('prepare').addEventListener('click',()=>run('prepare'));
+$('send').addEventListener('click',()=>run('send'));
+})();
+</script></body></html>
