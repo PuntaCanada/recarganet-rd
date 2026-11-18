@@ -1,0 +1,23 @@
+# RecargaNet RD - separate cron Worker (NOT Cloudflare Pages).
+# Copy this example to wrangler.toml and fill the real D1 database_id.
+# NEVER commit sandbox API keys or secrets.
+name = "recarganet-rd-sandbox-monitor"
+main = "src/index.js"
+compatibility_date = "2026-11-18"
+workers_dev = true
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+RECARGA_CRON_SYNC_ENABLED = "false"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "recarganet-rd-demo"
+database_id = "REPLACE_WITH_YOUR_EXISTING_D1_DATABASE_ID"
+
+# After deployment:
+#   npx wrangler secret put RECARGA_SANDBOX_KEY
+#   npx wrangler secret put RECARGA_SANDBOX_SECRET
+# Then change the enabled var to "true" and redeploy.
