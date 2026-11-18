@@ -2,8 +2,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const source=fs.readFileSync('cron-worker/src/index.js','utf8');
-const {reconcile}=awaitImport();
-async function awaitImport(){return import('data:text/javascript,'+encodeURIComponent(source))}
+const reconcile=new Function(source.replace('export async function reconcile','async function reconcile').replace('export default {','const scheduledHandler = {')+';return reconcile;')();
 function makeDb(state){
  const queries=[];
  const db={prepare(sql){
