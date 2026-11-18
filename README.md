@@ -73,3 +73,10 @@ El código y el panel están preparados, pero **no** se activa una base de datos
 - No existen pagos, cobros, recargas reales, seguimiento automático ni cuentas de clientes.
 - No introducir información real de clientes; el administrador solo puede almacenar cuatro números falsos de prueba.
 - Antes de usar D1 en producción se necesitan protección contra abuso, autenticación de clientes, permisos, trazabilidad, retención de datos, estados transaccionales seguros, recuperación de transacciones desconocidas e integración con pagos verificados.
+
+## Estados manuales de pedidos D1 (fase 5)
+- La consola privada `/demo-orders-admin/` permite actualizar manualmente `created`, `pending`, `success`, `rejected` y `unknown` en **pedidos ficticios**.
+- El endpoint `POST /api/admin/demo-order-status` exige `RECARGA_D1_DEMO_ENABLED=true`, una vinculación D1 `DB` y la clave de administrador. No llama a la API de Recarga.do.
+- La petición contiene `reference`, `expected_status` y `status`. La operación SQL solo se realiza si el estado actual coincide con `expected_status`; en otro caso devuelve `NOT_FOUND_OR_STATUS_CHANGED`, lo cual evita sobrescribir cambios concurrentes.
+- Un estado `success` asignado manualmente **no demuestra ninguna recarga real o sandbox**. No está conectado a pedidos públicos ni a pagos.
+- La consulta automática de estados reales del proveedor sigue pendiente de diseñar e implementar con almacenamiento seguro de identificadores y conciliación.
