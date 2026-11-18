@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>RecargaNet RD · Laboratorio de pedidos</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#173a40;background:#f0f7f7}
+*{box-sizing:border-box}body{margin:0;padding:26px 16px}.container{max-width:810px;margin:auto}
+.panel{background:white;border-radius:18px;border:1px solid #dce8e7;padding:25px;margin:17px 0}
+h1{font-size:27px;margin:8px 0 14px}h2{font-size:21px;margin:0 0 14px}p{line-height:1.5}
+.warning{background:#fff3d6;border:1px solid #e5cd8e;border-radius:10px;padding:14px}
+label{display:block;margin:14px 0 7px;font-weight:650}input,select,button{font:inherit;border-radius:9px;padding:12px;width:100%}
+input,select{border:1px solid #bccfd0}button{background:#087e66;color:white;border:0;cursor:pointer;margin-top:14px}
+button:disabled{opacity:.5;cursor:not-allowed}.outline{background:white;color:#087e66;border:1px solid #087e66}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fields>*{min-width:0}.muted{color:#527077;font-size:13px}
+.receipt{background:#edf6f5;border:1px dashed #88aba6;border-radius:11px;padding:18px}
+dl{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0}dt{color:#527077}dd{margin:0;text-align:right;overflow-wrap:anywhere}
+.status{font-weight:700}code{overflow-wrap:anywhere}a{color:#087e66}#message{white-space:pre-wrap;background:#ecf5f5;border-radius:9px;padding:13px;min-height:45px}
+@media(max-width:620px){.fields{grid-template-columns:1fr}.panel{padding:18px}}
+</style></head>
+<body><main class="container">
+<p><a href="/demo-orders-admin/">← Registro privado de pedidos</a></p>
+<div class="panel"><h1>Laboratorio de pedidos · RecargaNet RD</h1>
+<p class="warning"><strong>Solo pruebas privadas.</strong> Este formulario utiliza exclusivamente números ficticios. Crea una orden de prueba en D1, pero <strong>no cobra dinero, no envía recargas y no crea transacciones en Recarga.do</strong>.</p>
+<label for="token">Clave de administrador</label><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Clave privada de Cloudflare">
+<p class="muted">La clave permanece únicamente en esta pestaña, no se guarda en el navegador.</p></div>
+<div class="panel"><h2>1. Preparar pedido ficticio</h2>
+<div class="fields"><div><label for="operator">Operadora</label><select id="operator"><option value="Claro">Claro</option><option value="Altice">Altice</option><option value="Viva">Viva</option></select></div>
+<div><label for="amount">Monto de prueba (RD$)</label><input id="amount" type="number" min="30" max="2000" step="1" value="100"></div>
+<div><label for="phone">Número de laboratorio</label><select id="phone">
+<option value="8095550005">8095550005 – éxito</option><option value="8095550001">8095550001 – rechazo</option>
+<option value="8095550002">8095550002 – pendiente</option><option value="8095550000">8095550000 – inválido</option>
+</select></div></div>
+<button id="create" type="button">Crear pedido de prueba en D1</button>
+<p class="muted">La creación guarda únicamente datos de laboratorio. El estado inicial será <code>created</code>.</p></div>
+<div class="panel" id="receiptPanel" hidden><h2>2. Comprobante de prueba</h2><div class="receipt">
+<p><strong>RECARGANET RD · SIN VALOR COMERCIAL</strong></p><dl>
+<dt>Referencia</dt><dd><code id="reference"></code></dd>
+<dt>Operadora</dt><dd id="receiptOperator"></dd><dt>Monto</dt><dd id="receiptAmount"></dd>
+<dt>Número ficticio</dt><dd id="receiptPhone"></dd><dt>Estado D1</dt><dd class="status" id="receiptStatus"></dd>
+<dt>Estado Recarga.do</dt><dd id="receiptProvider">No vinculado</dd>
+<dt>Transacción Sandbox</dt><dd id="receiptTransaction">—</dd><dt>Última actualización</dt><dd id="updated"></dd>
+</dl><p class="muted">No acredita una recarga ni un pago. Los estados manuales no equivalen a confirmación del proveedor.</p></div>
+<button type="button" class="outline" id="check">Consultar estado en D1</button>
+<button type="button" class="outline" id="copy">Copiar referencia</button>
+<p class="muted">Mientras esté abierta esta pestaña, se consultará el estado cada 20 segundos. Sin recargas ni pagos.</p>
+</div>
+<div class="panel"><h2>3. Consultar una referencia existente</h2>
+<label for="lookupReference">Referencia D1-DEMO</label><input id="lookupReference" type="text" autocomplete="off" spellcheck="false" placeholder="D1-DEMO-...">
+<button id="lookup" class="outline" type="button">Buscar pedido guardado</button></div>
+<div class="panel"><h2>Resultado del laboratorio</h2><div id="message" role="status" aria-live="polite">Listo para crear una orden ficticia.</div></div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+let selected=null,requestInProgress=false;
+const message=text=>{$('message').textContent=text};
+async function call(url,payload){
+ const token=$('token').value;
+ if(token.length<32)throw Error('Introduce la clave completa de administrador.');
+ const result=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Test-Token':token},
+  body:JSON.stringify(payload),cache:'no-store'});
+ let data;try{data=await result.json()}catch{throw Error('Respuesta inválida del servidor')}
+ if(!result.ok)throw Error(data.error||'HTTP '+result.status);
+ return data;
+}
+function render(o){
+ selected=o.reference||o.id;
+ $('receiptPanel').hidden=false;
+ $('reference').textContent=selected;
+ $('lookupReference').value=selected;
+ $('receiptOperator').textContent=o.operator;
+ $('receiptAmount').textContent='RD$ '+o.amount_dop;
+ $('receiptPhone').textContent=o.test_phone;
+ $('receiptStatus').textContent=o.status;
+ $('receiptProvider').textContent=o.provider_status||'No vinculado';
+ $('receiptTransaction').textContent=o.sandbox_transaction_id??'—';
+ $('updated').textContent=o.updated_at||o.created_at||'—';
+}
+async function read(reference,quiet=false){
+ if(requestInProgress)return;
+ requestInProgress=true;
+ try{
+  const data=await call('/api/admin/demo-order-lookup',{reference});
+  render(data.order);
+  if(!quiet)message('Estado de prueba consultado en D1. No se ha efectuado ningún pago ni recarga.');
+ }catch(error){if(!quiet)message('Error: '+error.message)}
+ finally{requestInProgress=false}
+}
+$('create').addEventListener('click',async()=>{
+ $('create').disabled=true;
+ try{
+  const payload={operator:$('operator').value,amount:Number($('amount').value),test_phone:$('phone').value};
+  const data=await call('/api/admin/demo-orders',payload);
+  render({...data.order,updated_at:data.order.created_at});
+  message('Pedido ficticio guardado. Referencia: '+data.order.id+'. No se ha efectuado ningún pago ni recarga.');
+ }catch(error){message('Error: '+error.message)}
+ finally{$('create').disabled=false}
+});
+$('lookup').addEventListener('click',()=>read($('lookupReference').value.trim()));
+$('check').addEventListener('click',()=>{if(selected)read(selected);else message('Selecciona una referencia primero.')});
+$('copy').addEventListener('click',async()=>{if(!selected)return;try{await navigator.clipboard.writeText(selected);message('Referencia copiada.')}catch{message('Copia la referencia visible en el comprobante.')}});
+setInterval(()=>{if(selected&&!document.hidden&&['created','pending','unknown'].includes($('receiptStatus').textContent))read(selected,true)},20000);
+})();
+</script></body></html>
