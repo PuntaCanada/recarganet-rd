@@ -14,6 +14,7 @@ test('status updates require id and expected previous state',()=>{
  assert.match(source,/expected_status/);
  assert.match(source,/UPDATE demo_orders SET status = \?, updated_at = \? WHERE id = \? AND status = \?/);
  assert.match(source,/result.meta\?\.changes!==1/);
+ assert.match(source,/NOT EXISTS \(SELECT 1 FROM sandbox_order_links/);
  assert.match(source,/NOT_FOUND_OR_STATUS_CHANGED/);
 });
 test('status editor is labeled manual demo only',()=>{
