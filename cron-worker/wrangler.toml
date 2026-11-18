@@ -1,9 +1,14 @@
 # Standalone scheduled Cloudflare Worker; root directory: cron-worker
-# The D1 binding and sandbox secrets are configured in the WORKER dashboard,
-# not in the public repository.
+# D1 binding is configured here to persist across GitHub deployments.
+# Sandbox credentials must be configured as secret bindings in the Worker dashboard.
 name = "recarganet-rd-sandbox-monitor"
 main = "src/index.js"
 compatibility_date = "2026-11-18"
 
 [triggers]
 crons = ["*/5 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "recarganet-rd-demo"
+database_id = "1d52e64e-3d01-43b7-90b8-64926f83ab04"
