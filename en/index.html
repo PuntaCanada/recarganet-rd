@@ -59,7 +59,7 @@ try{
 const response=await fetch('/api/demo-orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({operator,phone:d,amount})});
 const result=await response.json();
 if(!response.ok||result.mode!=='simulation'||!result.ok)throw new Error(result.error||'DEMO_ERROR');
-lastReceipt='RECARGANET RD - TEST RECEIPT\\nReferencia: '+result.reference+'\\nDate: '+new Date(result.created_at).toLocaleString('en-US')+'\\nSelected operator: '+operator+'\\nPhone: '+d+'\\nSimulated amount: '+fmt(amount)+'\\nTHIS IS A SIMULATION. NO PAYMENT OR TOP-UP HAS BEEN MADE.';
+lastReceipt='RECARGANET RD - TEST RECEIPT\\nReference: '+result.reference+'\\nDate: '+new Date(result.created_at).toLocaleString('en-US')+'\\nSelected operator: '+operator+'\\nPhone: '+d+'\\nSimulated amount: '+fmt(amount)+'\\nTHIS IS A SIMULATION. NO PAYMENT OR TOP-UP HAS BEEN MADE.';
 $('receiptBody').textContent='Operator: '+operator+' · Phone: '+d+' · Amount: '+fmt(amount)+' · Ref: '+result.reference;
 receipt.classList.remove('hidden');receipt.scrollIntoView({behavior:'smooth',block:'nearest'});
 }catch{error.textContent='Could not create a test receipt. Please try again.'}
