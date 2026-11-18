@@ -46,6 +46,16 @@ test('success syncs only matching pending linked orders',async()=>{
  assert.match(queries[1].sql,/AND EXISTS/);
  assert.equal(queries[1].args[0],'success');
 });
+test('a linked pending D1 record catches up even if provider status is already SUCCESS',async()=>{
+ const row={...existing,provider_status:'SUCCESS'};
+ const {db,queries}=makeDb({rows:[row]});
+ await withProvider(transaction,async()=>{
+  const result=await reconcile(env(db),log);
+  assert.equal(result.examined,1);assert.equal(result.updated,1);
+ });
+ assert.equal(queries[1].args[0],'success');
+ assert.doesNotMatch(queries[1].sql,/provider_status IN/);
+});
 test('provider mismatch never changes an order',async()=>{
  const {db,queries}=makeDb({rows:[existing]});
  await withProvider({...transaction,data:{...transaction.data,amount:101}},async()=>{
