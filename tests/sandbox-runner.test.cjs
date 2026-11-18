@@ -21,7 +21,7 @@ test('Only fixed test numbers and one safe service and amount',()=>{
 test('Pending and uncertain states do not automatically retry with a new key',()=>{
  assert.match(source,/response\.status===202\?'pending'/);
  assert.match(source,/state:'unknown'/);
- assert.doesNotMatch(source,/for\s*\(/);
+ assert.doesNotMatch(source,/setTimeout\s*\(/);
 });
 test('Cloudflare function parses as an ES module',()=>{
  new vm.Script(source.replaceAll('export async function','async function'));
