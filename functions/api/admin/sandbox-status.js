@@ -1,5 +1,5 @@
 // RecargaNet RD - administrator-only, read-only sandbox transaction status.
-// Does not write to D1 and NEVER calls POST /v1/recargas.
+// Does not write to D1 and NEVER initiates any top-up.
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'}});
 async function equalSecret(expected,given){
  if(typeof expected!=='string'||expected.length<32||typeof given!=='string')return false;
