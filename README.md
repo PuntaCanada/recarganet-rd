@@ -129,3 +129,16 @@ Ejemplo del historial previo: la transacción Sandbox `84630` corresponde a Clar
 - El navegador consulta el estado cada 20 segundos mientras la pestaña esté visible y el estado esté abierto. No hay notificaciones externas ni almacenamiento del secreto en el navegador.
 - Un pedido nuevo permanece en estado `created` y no aparece en el monitor Cron hasta ser enlazado con una transacción Sandbox y estar en estado `pending`. La creación por sí sola no ejecuta ninguna operación de proveedor.
 - El checkout de clientes reales requiere todavía autenticación, manejo de datos personales, seguridad antiabuso, pasarela de pago, idempotencia transaccional persistida por el servidor y conciliación completa.
+
+## Dispatch único de pruebas con clave persistida (fase 10)
+
+**Migración requerida:** ejecutar `migrations/003_sandbox_dispatches.sql` en la base existente `recarganet-rd-demo`. Añade la tabla `sandbox_order_dispatches` sin alterar pedidos existentes.
+
+La consola privada `/sandbox-dispatch-admin/` permite:
+1. `prepare`: para un pedido D1 **created**, no vinculado, de **Claro, RD$100 y solo teléfonos ficticios permitidos**, genera en el servidor y guarda en D1 una UUID de idempotencia **una única vez**, antes de cualquier llamada de venta.
+2. `send`: **deshabilitado por defecto** mediante la nueva variable `RECARGA_SANDBOX_ORDER_SEND_ENABLED`; requiere `true` en **Cloudflare Pages, no en el Worker Cron**, así como el secreto de administrador, D1 y claves sandbox. Verifica `GET /v1/cuenta` y exige `sandbox=true`; bloquea cuentas de producción. Reclama atómicamente `phase=prepared → sending` en D1 antes de un único `POST /v1/recargas` con la clave guardada. Un segundo intento al mismo pedido se rechaza.
+3. Acepta solo `201` o `202` con un ID de transacción y comprueba con `GET /v1/transacciones/{id}` que coinciden servicio, importe, teléfono y moneda. `DB.batch` guarda la asociación y pasa la orden a `pending` de forma transaccional; el Worker Cron ya instalado la resolverá. `202` jamás se trata como `success` antes de la comprobación del proveedor.
+4. Si hay timeout, resultado desconocido, falta de ID o fallo de verificación, guarda la fase `uncertain` si D1 está disponible y **no repite la solicitud automáticamente**. Debe investigarse con los identificadores existentes antes de habilitar recuperación. La respuesta del navegador nunca contiene la clave de idempotencia.
+5. La función se limita a un flujo de prueba autorizado, no procesa dinero ni números reales ni está conectada al checkout público. La UI solicita confirmación adicional antes del envío.
+
+**Antes de activar el envío:** reemplazar el secreto de administrador histórico (`RECARGA_TEST_ADMIN_TOKEN`), que fue compartido en conversaciones anteriores; aplicar y revisar la migración; confirmar el deployment; auditar los test cases. Mantener `RECARGA_SANDBOX_TEST_ENABLED=false` para el runner antiguo. No activar esta función en un entorno de clientes. Enviar no es un paso necesario para probar la creación y persistencia de la UUID.
