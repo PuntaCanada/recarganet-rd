@@ -27,3 +27,6 @@ Prototipo gratuito de una plataforma de recargas móviles para República Domini
 - Revisión jurídica, antifraude, contratos y cálculo de margen antes de activar pagos.
 
 No subir claves API ni credenciales al repositorio público.
+
+## Comprobación de integración
+- 2026-11-18: commit de prueba para verificar que Cloudflare Pages detecta cambios automáticamente después de reconectar GitHub.
