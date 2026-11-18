@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>RecargaNet RD · Consultar estado sandbox</title><style>*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;background:#f1f7f7;color:#153a40;margin:0;padding:22px}.card{max-width:660px;margin:auto;background:white;border:1px solid #d8e7e7;border-radius:18px;padding:24px}h1{font-size:24px}.notice{background:#fff3d5;padding:14px;border:1px solid #e8ca87;border-radius:10px;line-height:1.5}label{display:block;font-weight:700;margin:17px 0 8px}input,button{font:inherit;width:100%;border-radius:10px;padding:13px}input{border:1px solid #aac2c6}button{background:#087e66;color:#fff;border:0;margin-top:18px;cursor:pointer}button:disabled{opacity:.5}pre{padding:15px;border-radius:10px;background:#eef5f5;white-space:pre-wrap;overflow-wrap:anywhere}small{color:#536e74}a{color:#087e66}</style></head><body><main class="card"><p><a href="/demo-orders-admin/">← Registro de pruebas</a></p><h1>Consultar transacción de prueba</h1><p class="notice"><strong>Consulta de solo lectura:</strong> se comprueba el estado de una transacción ya existente en Recarga.do Sandbox. No realiza otra recarga, no cobra dinero y <strong>no modifica pedidos D1</strong>.</p><label for="token">Clave privada de administrador</label><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="Clave privada guardada en Cloudflare"><label for="transaction">ID de transacción de Recarga.do</label><input id="transaction" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej.: 84630"><button type="button" id="check">Consultar estado</button><h2>Resultado</h2><pre id="result" role="status" aria-live="polite">Sin consulta todavía.</pre><small>Usa solo IDs de operaciones del sandbox que ya hayas realizado. Si recibes PENDING o PROCESSING, no generes otra recarga. Para convertirlo en estado de una orden D1 necesitamos antes vincular de forma comprobable los identificadores.</small></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+$('check').addEventListener('click',async()=>{
+const token=$('token').value;const id=Number($('transaction').value);
+if(token.length<32){$('result').textContent='Introduce la clave privada completa.';return}
+if(!Number.isSafeInteger(id)||id<=0){$('result').textContent='Introduce un ID de transacción válido.';return}
+$('check').disabled=true;$('result').textContent='Consultando solo el estado…';
+try{
+ const response=await fetch('/api/admin/sandbox-status',{method:'POST',headers:{'X-Admin-Test-Token':token,'Content-Type':'application/json'},body:JSON.stringify({transaction_id:id}),cache:'no-store'});
+ const payload=await response.json();
+ $('result').textContent=JSON.stringify({...payload,http_response:response.status},null,2);
+}catch{$('result').textContent='No se pudo consultar. No se ha iniciado otra recarga.'}
+finally{$('check').disabled=false}
+});
+})();
+</script></body></html>
