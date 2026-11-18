@@ -24,7 +24,7 @@ export async function onRequestPost({request,env}){
  if(status===expected_status)return json({ok:false,error:'UNCHANGED_STATUS'},422);
  const updated=new Date().toISOString();
  try{
-  const result=await env.DB.prepare('UPDATE demo_orders SET status = ?, updated_at = ? WHERE id = ? AND status = ?')
+  const result=await env.DB.prepare('UPDATE demo_orders SET status = ?, updated_at = ? WHERE id = ? AND status = ? AND NOT EXISTS (SELECT 1 FROM sandbox_order_links WHERE order_id = demo_orders.id)')
    .bind(status,updated,reference,expected_status).run();
   if(result.meta?.changes!==1)return json({ok:false,error:'NOT_FOUND_OR_STATUS_CHANGED'},409);
   return json({ok:true,mode:'d1-demo',manual:true,reference,status,previous_status:expected_status,updated_at:updated,
