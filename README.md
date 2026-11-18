@@ -80,3 +80,13 @@ El código y el panel están preparados, pero **no** se activa una base de datos
 - La petición contiene `reference`, `expected_status` y `status`. La operación SQL solo se realiza si el estado actual coincide con `expected_status`; en otro caso devuelve `NOT_FOUND_OR_STATUS_CHANGED`, lo cual evita sobrescribir cambios concurrentes.
 - Un estado `success` asignado manualmente **no demuestra ninguna recarga real o sandbox**. No está conectado a pedidos públicos ni a pagos.
 - La consulta automática de estados reales del proveedor sigue pendiente de diseñar e implementar con almacenamiento seguro de identificadores y conciliación.
+
+## Consulta segura de estados Recarga.do (fase 6)
+- Endpoint privado: `POST /api/admin/sandbox-status` con JSON `{"transaction_id":84630}` y header `X-Admin-Test-Token`. Es una consulta **solo de lectura** a `GET /v1/transacciones/{id}`.
+- Interfaz privada: `/sandbox-status/`. Introduzca la clave privada y una ID de transacción Recarga.do Sandbox existente.
+- Exige `RECARGA_D1_DEMO_ENABLED=true`, `RECARGA_TEST_ADMIN_TOKEN` y credenciales `RECARGA_SANDBOX_KEY` / `RECARGA_SANDBOX_SECRET`; rechaza cuentas que no confirmen `data.sandbox === true`.
+- No modifica D1 ni crea recargas. `RECARGA_SANDBOX_TEST_ENABLED` puede y debe permanecer `false`.
+- Estados documentados: `SUCCESS`, `FAILED`, `PENDING`, `PROCESSING`, `REVERSED`; se rechazan estados desconocidos.
+- **Aún NO hay sincronización automática D1**: la tabla de pedidos ficticios no guarda ninguna vinculación verificable con transacciones Recarga.do. Antes de actualizar estados D1 con resultados externos, hay que añadir asociación de transaction ID, importe, servicio y número e introducir un flujo de creación con IDs persistidos. Nunca asociar transacciones por mera coincidencia ni marcar las órdenes de demostración manual como operaciones reales.
+- La consulta sobre una transacción existente tampoco equivale a volver a emitir la recarga.
+- Documentación: https://recarga.do/doc/integracion.html#transacciones
