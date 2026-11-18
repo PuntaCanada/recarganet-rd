@@ -51,7 +51,7 @@ test('Browser language chooses correct landing page, and explicit selection over
  check('en','es-DO',null,'/');
  check('en','es-DO','en',null);
  check('es','en-US','es',null);
- check('en','de-DE','en','/de/');
+ check('en','de-DE','en',null);
 });
 
 test('Six-language menu has four locale links with accessible labels',()=>{
