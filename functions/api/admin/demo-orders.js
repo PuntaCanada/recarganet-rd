@@ -30,7 +30,7 @@ export async function onRequestPost({request,env}) {
  let input;try{input=await request.json()}catch{return response({ok:false,error:'INVALID_JSON'},400)}
  if(!input||typeof input!=='object'||Array.isArray(input))return response({ok:false,error:'INVALID_INPUT'},422);
  const {operator,amount,test_phone}=input;
- if(!Object.hasOwn(ids,operator)||!Number.isInteger(amount)||amount<({Claro:30,Altice:30,Viva:25})[operator]||amount>2000||!numbers.has(test_phone))return response({ok:false,error:'INVALID_INPUT'},422);
+ if(typeof operator!=='string'||!Object.hasOwn(ids,operator)||!Number.isInteger(amount)||amount<({Claro:30,Altice:30,Viva:25})[operator]||amount>2000||!numbers.has(test_phone))return response({ok:false,error:'INVALID_INPUT'},422);
  const now=new Date().toISOString(),id='D1-DEMO-'+crypto.randomUUID();
  try {
   await env.DB.prepare('INSERT INTO demo_orders (id,operator,service_id,amount_dop,test_phone,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?)').bind(id,operator,ids[operator],amount,test_phone,'created',now,now).run();

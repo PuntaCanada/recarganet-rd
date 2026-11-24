@@ -12,7 +12,7 @@ export async function onRequestPost({request}) {
   try {body=await request.json()}catch{return send({ok:false,error:'INVALID_JSON'},400)}
   if(!body||typeof body!=='object'||Array.isArray(body))return send({ok:false,error:'INVALID_REQUEST'},400);
   const {operator,phone,amount}=body;
-  if(!Object.prototype.hasOwnProperty.call(services,operator))return send({ok:false,error:'INVALID_OPERATOR'},422);
+  if(typeof operator!=='string'||!Object.prototype.hasOwnProperty.call(services,operator))return send({ok:false,error:'INVALID_OPERATOR'},422);
   if(typeof phone!=='string'||! /^(809|829|849)[0-9]{7}$/.test(phone))return send({ok:false,error:'INVALID_PHONE'},422);
   if(!Number.isInteger(amount)||amount<minimum[operator]||amount>maximum)return send({ok:false,error:'INVALID_AMOUNT'},422);
   const reference='DEMO-'+crypto.randomUUID();

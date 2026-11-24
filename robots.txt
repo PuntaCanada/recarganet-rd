@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /sandbox-admin/
 
 Sitemap: https://recarganet-rd.pages.dev/sitemap.xml
