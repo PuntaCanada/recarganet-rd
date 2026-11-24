@@ -10,6 +10,6 @@ test('Three mobile services are matched by ID, not arbitrary catalog entries',()
 test('Sandbox limits and custom amount validation are present',()=>{
  assert.match(html,/fetch\('\/api\/catalog'/);
  assert.match(html,/id="customAmount"/);
- assert.match(html,/amount>=l\.min&&amount<=l\.max/);
+ assert.match(html,/amount>=Math\.max\(demoMinimum\[operator\],l\?\.min\?\?0\)&&amount<=Math\.min\(2000,l\?\.max\?\?2000\)/);
  assert.match(html,/if\(!validAmount\(\)\)/);
 });

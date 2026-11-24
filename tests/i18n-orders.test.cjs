@@ -28,30 +28,20 @@ test('Server validates operator, amount and phone and makes only simulation',()=
  assert.doesNotMatch(api,/api\.recarga\.do|fetch\(/);
 });
 
-test('Browser language chooses correct landing page, and explicit selection overrides it',()=>{
- function check(page,locale,saved,expected){
-  const html=page==='en'?en:es;
-  const src=html.match(/<script>\s*\(function\(\)\{\s*const routes=[\s\S]*?<\/script>/)?.[0]?.replace(/^<script>/,'').replace(/<\/script>$/,'');
-  assert.ok(src,'Automatic locale routing missing');
-  const links=[{lang:'es',events:{},addEventListener(k,fn){this.events[k]=fn}},{lang:'en',events:{},addEventListener(k,fn){this.events[k]=fn}}];
-  const storage={v:saved,getItem(){return this.v},setItem(_k,value){this.v=value}};
-  const location={pathname:page==='en'?'/en/':'/',search:'',hash:'',replaced:null,replace(url){this.replaced=url}};
-  const doc={addEventListener(_k,fn){fn()},querySelectorAll(){return links}};
-  vm.runInNewContext(src,{navigator:{languages:[locale],language:locale},localStorage:storage,document:doc,location});
-  assert.equal(location.replaced,expected,'Wrong landing page for '+locale+' and '+page);
-  links[1].events.click();
-  assert.equal(storage.v,'en','Manual English preference was not saved');
+test('Every locale has a stable URL and reciprocal search metadata',()=>{
+ const routes=['/','/en/','/de/','/fr/','/ht/','/pt/'];
+ const languages=['es','en','de','fr','ht','pt'];
+ const base='https://recarganet-rd.pages.dev';
+ const sitemap=fs.readFileSync('sitemap.xml','utf8');
+ for(const route of routes){
+  const html=fs.readFileSync('.'+route+'index.html','utf8');
+  assert.doesNotMatch(html,/location\.replace\(/);
+  assert.ok(html.includes('<link rel="canonical" href="'+base+route+'">'));
+  assert.ok(sitemap.includes('<loc>'+base+route+'</loc>'));
+  for(const [index,lang] of languages.entries()){
+   assert.ok(html.includes('<link rel="alternate" hreflang="'+lang+'" href="'+base+routes[index]+'">'));
+  }
  }
- check('es','es-DO',null,null);
- check('es','en-US',null,'/en/');
- check('es','de-DE',null,'/de/');
- check('es','fr-FR',null,'/fr/');
- check('es','ht-HT',null,'/ht/');
- check('es','pt-BR',null,'/pt/');
- check('en','es-DO',null,'/');
- check('en','es-DO','en',null);
- check('es','en-US','es',null);
- check('en','de-DE','en',null);
 });
 
 test('Six-language menu has four locale links with accessible labels',()=>{

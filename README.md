@@ -142,3 +142,10 @@ La consola privada `/sandbox-dispatch-admin/` permite:
 5. La función se limita a un flujo de prueba autorizado, no procesa dinero ni números reales ni está conectada al checkout público. La UI solicita confirmación adicional antes del envío.
 
 **Antes de activar el envío:** reemplazar el secreto de administrador histórico (`RECARGA_TEST_ADMIN_TOKEN`), que fue compartido en conversaciones anteriores; aplicar y revisar la migración; confirmar el deployment; auditar los test cases. Mantener `RECARGA_SANDBOX_TEST_ENABLED=false` para el runner antiguo. No activar esta función en un entorno de clientes. Enviar no es un paso necesario para probar la creación y persistencia de la UUID.
+
+## Verificación previa a una integración comercial
+
+- Ejecutar `node --test tests/*.test.cjs` con Node.js 22. La prueba D1 ejecuta el esquema y las migraciones en SQLite en memoria, sin credenciales ni llamadas al proveedor.
+- En un entorno aislado y con credenciales sandbox verificadas, comprobar el catálogo y los escenarios de éxito, rechazo, pendiente, número inválido y repetición con la misma clave. Verificar las transiciones D1, la asociación con el identificador del proveedor y la conciliación de resultados inciertos antes de habilitar cualquier envío adicional.
+- Antes de diseñar el checkout comercial, confirmar por escrito las comisiones, los cargos, el saldo inicial y las condiciones de Recarga.do. Registrar la aprobación explícita antes de conectar un proveedor real o una pasarela de pagos.
+- La integración comercial requiere credenciales separadas por entorno, autenticación y permisos, límites de solicitudes, idempotencia persistente, conciliación de pagos y recargas, y tratamiento de reversiones. Mantener los endpoints públicos en modo demostración hasta completar estas verificaciones y obtener la aprobación.
