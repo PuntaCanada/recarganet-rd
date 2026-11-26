@@ -1,9 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://recarganet-rd.pages.dev/</loc></url>
   <url><loc>https://recarganet-rd.pages.dev/en/</loc></url>
   <url><loc>https://recarganet-rd.pages.dev/de/</loc></url>
   <url><loc>https://recarganet-rd.pages.dev/fr/</loc></url>
   <url><loc>https://recarganet-rd.pages.dev/ht/</loc></url>
   <url><loc>https://recarganet-rd.pages.dev/pt/</loc></url>
+  <url><loc>https://recarganet-rd.pages.dev/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
+  <url><loc>https://recarganet-rd.pages.dev/en/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
+  <url><loc>https://recarganet-rd.pages.dev/de/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
+  <url><loc>https://recarganet-rd.pages.dev/fr/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
+  <url><loc>https://recarganet-rd.pages.dev/ht/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
+  <url><loc>https://recarganet-rd.pages.dev/pt/partners.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://recarganet-rd.pages.dev/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://recarganet-rd.pages.dev/en/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://recarganet-rd.pages.dev/de/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://recarganet-rd.pages.dev/fr/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="ht" href="https://recarganet-rd.pages.dev/ht/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://recarganet-rd.pages.dev/pt/partners.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://recarganet-rd.pages.dev/partners.html"/>
+  </url>
 </urlset>
