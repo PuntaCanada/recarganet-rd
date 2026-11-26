@@ -9,7 +9,24 @@ export async function onRequestPost({request}) {
   const length=Number(request.headers.get('content-length')||0);
   if(length>2048) return send({ok:false,error:'INVALID_REQUEST'},413);
   let body;
-  try {body=await request.json()}catch{return send({ok:false,error:'INVALID_JSON'},400)}
+  try {
+    const reader=request.body?.getReader();
+    if(!reader)return send({ok:false,error:'INVALID_JSON'},400);
+    const bytes=new Uint8Array(2048);
+    let used=0;
+    try {
+      while(true){
+        const {done,value}=await reader.read();
+        if(done)break;
+        if(value.byteLength>bytes.length-used){
+          void reader.cancel().catch(()=>{});
+          return send({ok:false,error:'INVALID_REQUEST'},413);
+        }
+        bytes.set(value,used);used+=value.byteLength;
+      }
+    } finally {reader.releaseLock()}
+    body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,used)));
+  }catch{return send({ok:false,error:'INVALID_JSON'},400)}
   if(!body||typeof body!=='object'||Array.isArray(body))return send({ok:false,error:'INVALID_REQUEST'},400);
   const {operator,phone,amount}=body;
   if(typeof operator!=='string'||!Object.prototype.hasOwnProperty.call(services,operator))return send({ok:false,error:'INVALID_OPERATOR'},422);
